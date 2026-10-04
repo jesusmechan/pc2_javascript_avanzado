@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="mb-0"><i class="bi bi-book me-2 text-primary"></i>Catálogo de libros</h2>
+    <a routerLink="/libros/nuevo" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Nuevo libro</a>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body row g-2 align-items-center">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-search"></i></span>
+          <input
+            type="search"
+            class="form-control"
+            placeholder="Buscar por título o autor..."
+            [(ngModel)]="busqueda"
+          />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" [(ngModel)]="categoria">
+          <option value="">Todas las categorías</option>
+          <option *ngFor="let c of categorias" [value]="c.nombre">{{ c.nombre }}</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-grid">
+        <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-success" *ngIf="mensaje"><i class="bi bi-check-circle me-1"></i>{{ mensaje }}</div>
+  <div class="alert alert-danger" *ngIf="error"><i class="bi bi-exclamation-triangle me-1"></i>{{ error }}</div>
+
+  <!-- Esqueleto de carga usando la directiva estructural personalizada *appRepetir -->
+  <div class="row g-4" *ngIf="cargando">
+    <div class="col-sm-6 col-lg-4 col-xl-3" *appRepetir="4">
+      <div class="card border-0 shadow-sm placeholder-glow" aria-hidden="true">
+        <div class="placeholder bg-secondary-subtle" style="height: 260px"></div>
+        <div class="card-body">
+          <h5 class="placeholder col-8"></h5>
+          <p class="placeholder col-12"></p>
+          <p class="placeholder col-6"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!cargando && !error">
+    <ng-container *ngIf="libros | filtrarLibros: busqueda : categoria as filtrados">
+      <p class="text-muted small">Mostrando {{ filtrados.length }} de {{ libros.length }} libros</p>
+
+      <div class="row g-4" *ngIf="filtrados.length; else sinResultados">
+        <div class="col-sm-6 col-lg-4 col-xl-3" *ngFor="let libro of filtrados; trackBy: porId">
+          <app-libro-card [libro]="libro" (eliminar)="eliminar($event)" />
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #sinResultados>
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-emoji-frown display-4"></i>
+      <p class="mt-2">No se encontraron libros con esos filtros.</p>
+    </div>
+  </ng-template>
+</div>

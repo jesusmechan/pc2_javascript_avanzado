@@ -1,0 +1,58 @@
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Inicio</a></li>
+      <li class="breadcrumb-item"><a routerLink="/libros">Catálogo</a></li>
+      <li class="breadcrumb-item active">{{ libro?.titulo ?? 'Detalle' }}</li>
+    </ol>
+  </nav>
+
+  <div class="alert alert-warning" *ngIf="noEncontrado">
+    El libro solicitado no existe. <a routerLink="/libros" class="alert-link">Volver al catálogo</a>
+  </div>
+
+  <div class="card border-0 shadow-sm" *ngIf="libro">
+    <div class="row g-0">
+      <div class="col-md-4 bg-light d-flex align-items-center justify-content-center p-4">
+        <img [src]="libro.portada" class="img-fluid rounded shadow" [alt]="libro.titulo" style="max-height: 420px" />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body p-4">
+          <span class="badge text-bg-primary mb-2">{{ libro.categoria | uppercase }}</span>
+          <h2 class="card-title">{{ libro.titulo }}</h2>
+          <p class="text-muted fs-5">{{ libro.autor | titlecase }}</p>
+          <p>{{ libro.descripcion }}</p>
+
+          <dl class="row mb-4">
+            <dt class="col-sm-4">ISBN</dt>
+            <dd class="col-sm-8">{{ libro.isbn }}</dd>
+            <dt class="col-sm-4">Año de publicación</dt>
+            <dd class="col-sm-8">{{ libro.anio }}</dd>
+            <dt class="col-sm-4">Precio</dt>
+            <dd class="col-sm-8 fw-bold text-primary">{{ libro.precio | currency: 'PEN' }}</dd>
+            <dt class="col-sm-4">Disponibilidad</dt>
+            <dd class="col-sm-8"><span [appEstadoStock]="libro.stock">{{ libro.stock }} ejemplar(es)</span></dd>
+          </dl>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <a routerLink="/libros" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+            <a [routerLink]="['/libros', libro.id, 'editar']" class="btn btn-primary">
+              <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a
+              routerLink="/prestamos"
+              [queryParams]="{ libro: libro.id }"
+              class="btn btn-success"
+              [class.disabled]="libro.stock === 0"
+            >
+              <i class="bi bi-journal-plus"></i> Prestar
+            </a>
+            <button class="btn btn-outline-danger ms-auto" (click)="eliminar()">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,127 @@
+{
+  "categorias": [
+    { "id": 1, "nombre": "Novela" },
+    { "id": 2, "nombre": "Programación" },
+    { "id": 3, "nombre": "Ciencia" },
+    { "id": 4, "nombre": "Historia" },
+    { "id": 5, "nombre": "Fantasía" }
+  ],
+  "libros": [
+    {
+      "id": 1,
+      "titulo": "Cien años de soledad",
+      "autor": "gabriel garcía márquez",
+      "isbn": "978-0307474728",
+      "categoria": "Novela",
+      "anio": 1967,
+      "precio": 59.9,
+      "stock": 4,
+      "portada": "https://covers.openlibrary.org/b/isbn/9780307474728-L.jpg",
+      "descripcion": "La historia de la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo, obra cumbre del realismo mágico latinoamericano."
+    },
+    {
+      "id": 2,
+      "titulo": "La ciudad y los perros",
+      "autor": "mario vargas llosa",
+      "isbn": "978-8420412146",
+      "categoria": "Novela",
+      "anio": 1963,
+      "precio": 54.5,
+      "stock": 2,
+      "portada": "https://covers.openlibrary.org/b/isbn/9788420412146-L.jpg",
+      "descripcion": "Novela ambientada en el Colegio Militar Leoncio Prado de Lima que retrata la violencia y la corrupción en la formación de un grupo de cadetes."
+    },
+    {
+      "id": 3,
+      "titulo": "Clean Code",
+      "autor": "robert c. martin",
+      "isbn": "978-0132350884",
+      "categoria": "Programación",
+      "anio": 2008,
+      "precio": 149,
+      "stock": 6,
+      "portada": "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg",
+      "descripcion": "Guía práctica sobre cómo escribir código limpio, legible y mantenible, con principios, patrones y casos de estudio reales."
+    },
+    {
+      "id": 4,
+      "titulo": "Eloquent JavaScript",
+      "autor": "marijn haverbeke",
+      "isbn": "978-1593279509",
+      "categoria": "Programación",
+      "anio": 2018,
+      "precio": 120,
+      "stock": 0,
+      "portada": "https://covers.openlibrary.org/b/isbn/9781593279509-L.jpg",
+      "descripcion": "Introducción moderna a la programación con JavaScript que cubre desde los fundamentos del lenguaje hasta el navegador y Node.js."
+    },
+    {
+      "id": 5,
+      "titulo": "Breve historia del tiempo",
+      "autor": "stephen hawking",
+      "isbn": "978-0553380163",
+      "categoria": "Ciencia",
+      "anio": 1988,
+      "precio": 69.9,
+      "stock": 3,
+      "portada": "https://covers.openlibrary.org/b/isbn/9780553380163-L.jpg",
+      "descripcion": "Exploración divulgativa del origen y destino del universo, los agujeros negros, el Big Bang y la naturaleza del tiempo."
+    },
+    {
+      "id": 6,
+      "titulo": "Sapiens",
+      "autor": "yuval noah harari",
+      "isbn": "978-0062316097",
+      "categoria": "Historia",
+      "anio": 2011,
+      "precio": 89,
+      "stock": 5,
+      "portada": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+      "descripcion": "Un recorrido por la historia de la humanidad desde la aparición del Homo sapiens hasta la revolución científica y tecnológica."
+    },
+    {
+      "id": 7,
+      "titulo": "El Hobbit",
+      "autor": "j. r. r. tolkien",
+      "isbn": "978-0547928227",
+      "categoria": "Fantasía",
+      "anio": 1937,
+      "precio": 65,
+      "stock": 1,
+      "portada": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+      "descripcion": "Bilbo Bolsón emprende una aventura inesperada junto a un mago y trece enanos para recuperar un tesoro custodiado por el dragón Smaug."
+    }
+  ],
+  "prestamos": [
+    {
+      "id": 1,
+      "libroId": 1,
+      "tituloLibro": "Cien años de soledad",
+      "lector": "ana torres",
+      "email": "ana.torres@utp.edu.pe",
+      "fechaPrestamo": "2026-09-28",
+      "fechaDevolucion": "2026-10-12",
+      "devuelto": false
+    },
+    {
+      "id": 2,
+      "libroId": 3,
+      "tituloLibro": "Clean Code",
+      "lector": "luis ramírez",
+      "email": "luis.ramirez@utp.edu.pe",
+      "fechaPrestamo": "2026-09-15",
+      "fechaDevolucion": "2026-09-29",
+      "devuelto": false
+    },
+    {
+      "id": 3,
+      "libroId": 6,
+      "tituloLibro": "Sapiens",
+      "lector": "maría quispe",
+      "email": "maria.quispe@utp.edu.pe",
+      "fechaPrestamo": "2026-09-01",
+      "fechaDevolucion": "2026-09-15",
+      "devuelto": true
+    }
+  ]
+}
