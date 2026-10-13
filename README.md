@@ -26,7 +26,7 @@ flowchart LR
 
 ```text
 SEMANA 09/
-├── ARQUITECTURA.md          ← este documento
+├── README.md                ← este documento
 ├── backend/
 │   ├── data/db.json         ← "base de datos"
 │   ├── package.json
