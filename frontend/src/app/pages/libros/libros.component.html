@@ -1,0 +1,83 @@
+<div class="container">
+  <header class="page-header aparecer">
+    <div>
+      <div class="eyebrow"><i class="bi bi-collection"></i>Colección</div>
+      <h1 class="page-title">Catálogo de libros</h1>
+      <p class="page-subtitle">Busca, filtra y administra los títulos disponibles en la biblioteca.</p>
+    </div>
+    <a routerLink="/libros/nuevo" class="btn btn-primary"><i class="bi bi-plus-lg"></i>Nuevo libro</a>
+  </header>
+
+  <div class="card toolbar mb-4 aparecer" style="animation-delay: 80ms">
+    <div class="d-flex flex-column flex-md-row gap-2">
+      <div class="input-icon flex-grow-1">
+        <i class="bi bi-search"></i>
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Buscar por título o autor..."
+          aria-label="Buscar libros"
+          [(ngModel)]="busqueda"
+        />
+      </div>
+      <button class="btn btn-ghost" (click)="limpiarFiltros()" [disabled]="!busqueda && !categoria">
+        <i class="bi bi-x-circle"></i>Limpiar filtros
+      </button>
+    </div>
+    <div class="chip-filter" role="group" aria-label="Filtrar por categoría">
+      <button type="button" [class.active]="!categoria" (click)="categoria = ''">Todas</button>
+      <button
+        type="button"
+        *ngFor="let c of categorias"
+        [class.active]="categoria === c.nombre"
+        (click)="categoria = c.nombre"
+      >
+        {{ c.nombre }}
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-success aparecer-suave" *ngIf="mensaje"><i class="bi bi-check-circle"></i>{{ mensaje }}</div>
+  <div class="alert alert-danger aparecer" *ngIf="error"><i class="bi bi-exclamation-triangle"></i>{{ error }}</div>
+
+  <!-- Esqueleto de carga usando la directiva estructural personalizada *appRepetir -->
+  <div class="row g-4 aparecer-suave" *ngIf="cargando">
+    <div class="col-sm-6 col-lg-4 col-xl-3" *appRepetir="4">
+      <div class="card book-card placeholder-wave" aria-hidden="true">
+        <div class="book-cover placeholder w-100"></div>
+        <div class="card-body">
+          <h5 class="placeholder col-8 rounded"></h5>
+          <p class="placeholder col-12 rounded"></p>
+          <p class="placeholder col-6 rounded"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!cargando && !error">
+    <ng-container *ngIf="libros | filtrarLibros: busqueda : categoria as filtrados">
+      <p class="text-muted small mb-3 aparecer-suave">
+        Mostrando <strong class="text-dark">{{ filtrados.length }}</strong> de {{ libros.length }} libros
+      </p>
+
+      <div class="row g-4" *ngIf="filtrados.length; else sinResultados">
+        <div
+          class="col-sm-6 col-lg-4 col-xl-3 aparecer"
+          *ngFor="let libro of filtrados; let i = index; trackBy: porId"
+          [style.animation-delay.ms]="retrasoEntrada(i)"
+        >
+          <app-libro-card [libro]="libro" (eliminar)="eliminar($event)" />
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #sinResultados>
+    <div class="card empty-state aparecer">
+      <div><span class="icon-tile tile-primary"><i class="bi bi-search"></i></span></div>
+      <h2 class="section-title mb-1">Sin resultados</h2>
+      <p class="mb-3">No se encontraron libros con esos filtros.</p>
+      <div><button class="btn btn-ghost" (click)="limpiarFiltros()">Limpiar filtros</button></div>
+    </div>
+  </ng-template>
+</div>

@@ -1,0 +1,113 @@
+<div class="container">
+  <section class="hero mb-4 aparecer">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="hero-badge mb-3"><i class="bi bi-stars"></i>Sistema de gestión bibliotecaria</span>
+        <h1 class="mb-3">Tu biblioteca, <em>organizada</em> y siempre a la mano.</h1>
+        <p class="lead mb-4">
+          Administra el catálogo de libros, controla el stock y registra los préstamos de los lectores desde un
+          solo lugar.
+        </p>
+        <div class="d-flex gap-2 flex-wrap">
+          <a routerLink="/libros" class="btn btn-accent btn-lg"><i class="bi bi-search"></i>Explorar catálogo</a>
+          <a routerLink="/prestamos" class="btn btn-outline-light btn-lg">
+            <i class="bi bi-journal-plus"></i>Registrar préstamo
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="cover-fan" *ngIf="portadas.length">
+          <img *ngFor="let l of portadas" [src]="l.portada" [alt]="'Portada de ' + l.titulo" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert-danger aparecer" *ngIf="error">
+    <i class="bi bi-exclamation-triangle"></i>
+    <span>No se pudo conectar con la API. Ejecuta <code>npm run api</code> para iniciar el backend.</span>
+  </div>
+
+  <div class="row g-3 g-lg-4 mb-5">
+    <div
+      class="col-sm-6 col-xl-3 aparecer"
+      *ngFor="let ind of indicadores; let i = index"
+      [style.animation-delay.ms]="100 + i * 70"
+    >
+      <div class="card stat-card" appResaltar>
+        <span class="icon-tile tile-{{ ind.color }}"><i class="bi" [class]="ind.icono"></i></span>
+        <div class="min-w-0">
+          <div class="stat-label">{{ ind.titulo }}</div>
+          <div class="stat-value" *ngIf="ind.moneda; else numero">{{ ind.valor | currency: 'PEN' : 'S/' : '1.0-0' }}</div>
+          <ng-template #numero>
+            <div class="stat-value">{{ ind.valor | number }}</div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8 aparecer" style="animation-delay: 300ms" *ngIf="recientes.length">
+      <div class="d-flex align-items-end justify-content-between mb-3">
+        <div>
+          <div class="eyebrow"><i class="bi bi-clock-history"></i>Novedades</div>
+          <h2 class="section-title">Agregados recientemente</h2>
+        </div>
+        <a routerLink="/libros" class="btn btn-ghost btn-sm">Ver todo <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="row g-3">
+        <div class="col-6 col-md-3" *ngFor="let l of recientes">
+          <a class="text-decoration-none d-block h-100" [routerLink]="['/libros', l.id]">
+            <div class="card book-card" appResaltar>
+              <div class="book-cover">
+                <img
+                  [src]="l.portada"
+                  [alt]="l.titulo"
+                  class="cargada"
+                  (load)="usarPortadaPorDefecto($event)"
+                  (error)="usarPortadaPorDefecto($event)"
+                />
+              </div>
+              <div class="p-3">
+                <div class="book-title fs-6">{{ l.titulo }}</div>
+                <div class="small text-muted text-truncate">{{ l.autor | titlecase }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 aparecer" style="animation-delay: 380ms">
+      <div class="eyebrow"><i class="bi bi-lightning-charge"></i>Atajos</div>
+      <h2 class="section-title mb-3">Acciones rápidas</h2>
+      <div class="d-grid gap-3">
+        <a routerLink="/libros/nuevo" class="card shortcut" appResaltar>
+          <span class="icon-tile tile-primary"><i class="bi bi-plus-lg"></i></span>
+          <div>
+            <div class="fw-semibold">Registrar libro</div>
+            <div class="small text-muted">Agrega un título al catálogo</div>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+        <a routerLink="/prestamos" class="card shortcut" appResaltar>
+          <span class="icon-tile tile-warning"><i class="bi bi-journal-arrow-up"></i></span>
+          <div>
+            <div class="fw-semibold">Nuevo préstamo</div>
+            <div class="small text-muted">Presta un ejemplar a un lector</div>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+        <a routerLink="/libros" class="card shortcut" appResaltar>
+          <span class="icon-tile tile-success"><i class="bi bi-grid"></i></span>
+          <div>
+            <div class="fw-semibold">Explorar catálogo</div>
+            <div class="small text-muted">Busca y filtra por categoría</div>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
