@@ -5,56 +5,148 @@
       <div class="auth-header">
         <span class="section-tag">Mi cuenta</span>
         <h3>{{ vista === 'login' ? 'Bienvenido de nuevo' : 'Crea tu cuenta' }}</h3>
-        <p>Ingresa para registrar a tus mascotas, activar su suscripción y ver tus pedidos.</p>
+        <p>
+          {{ volver ? 'Inicia sesión o crea una cuenta para continuar.' : 'Ingresa para registrar a tus mascotas, activar su suscripción y ver tus pedidos.' }}
+        </p>
       </div>
 
-      <div class="auth-tabs" role="tablist">
-        <button class="auth-tab" type="button" role="tab" [class.active]="vista === 'login'" (click)="cambiarVista('login')">Iniciar sesión</button>
-        <button class="auth-tab" type="button" role="tab" [class.active]="vista === 'registro'" (click)="cambiarVista('registro')">Crear cuenta</button>
+      <div class="auth-tabs" role="tablist" aria-label="Acceso a la cuenta" (keydown)="moverEntrePestanas($event)">
+        <button
+          id="tab-login"
+          class="auth-tab"
+          type="button"
+          role="tab"
+          aria-controls="panel-login"
+          [attr.aria-selected]="vista === 'login'"
+          [attr.tabindex]="vista === 'login' ? 0 : -1"
+          [class.active]="vista === 'login'"
+          (click)="cambiarVista('login')"
+        >Iniciar sesión</button>
+        <button
+          id="tab-registro"
+          class="auth-tab"
+          type="button"
+          role="tab"
+          aria-controls="panel-registro"
+          [attr.aria-selected]="vista === 'registro'"
+          [attr.tabindex]="vista === 'registro' ? 0 : -1"
+          [class.active]="vista === 'registro'"
+          (click)="cambiarVista('registro')"
+        >Crear cuenta</button>
       </div>
 
-      <form class="auth-form" *ngIf="vista === 'login'" #loginForm="ngForm" (ngSubmit)="iniciarSesion(loginForm)" novalidate>
+      <form
+        id="panel-login"
+        class="auth-form"
+        role="tabpanel"
+        aria-labelledby="tab-login"
+        *ngIf="vista === 'login'"
+        #loginForm="ngForm"
+        (ngSubmit)="iniciarSesion(loginForm)"
+        novalidate
+      >
         <div class="form-group">
           <label for="loginEmail">Correo electrónico</label>
-          <input id="loginEmail" name="email" type="email" autocomplete="email" [(ngModel)]="login.email" #email="ngModel" required email [class.is-invalid]="email.invalid && email.touched" />
+          <input id="loginEmail" name="email" type="email" autocomplete="email" placeholder="tu@email.com" [(ngModel)]="login.email" #email="ngModel" required email [class.is-invalid]="email.invalid && email.touched" />
           <small class="field-error" *ngIf="email.invalid && email.touched">Ingresa un correo válido.</small>
         </div>
         <div class="form-group">
           <label for="loginPassword">Contraseña</label>
           <div class="password-field">
-            <input id="loginPassword" name="password" [type]="verPassword ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="login.password" #password="ngModel" required [class.is-invalid]="password.invalid && password.touched" />
-            <button class="password-toggle" type="button" (click)="verPassword = !verPassword">{{ verPassword ? 'Ocultar' : 'Mostrar' }}</button>
+            <input
+              id="loginPassword"
+              name="password"
+              [type]="verPassword ? 'text' : 'password'"
+              autocomplete="current-password"
+              [(ngModel)]="login.password"
+              #password="ngModel"
+              required
+              [class.is-invalid]="password.invalid && password.touched"
+              (keyup)="detectarBloqMayus($event)"
+              (blur)="bloqMayus = false"
+            />
+            <button class="password-toggle" type="button" [attr.aria-pressed]="verPassword" [attr.aria-label]="verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="verPassword = !verPassword">
+              {{ verPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
           </div>
+          <small class="field-error" *ngIf="password.invalid && password.touched">Ingresa tu contraseña.</small>
+          <small class="field-hint field-hint--warning" *ngIf="bloqMayus" role="status">⇪ Bloq Mayús está activado.</small>
         </div>
         <div class="auth-options">
-          <label class="checkbox-label"><input type="checkbox" name="recordar" [(ngModel)]="login.recordar" /> Recordarme</label>
+          <label class="checkbox-label"><input type="checkbox" name="recordar" [(ngModel)]="login.recordar" /> Recordarme en este equipo</label>
         </div>
         <p class="auth-error" *ngIf="error" role="alert">{{ error }}</p>
         <button class="btn btn--primary btn--full btn--lg" type="submit" [disabled]="enviando">{{ enviando ? 'Ingresando...' : 'Iniciar sesión' }}</button>
+        <p class="auth-switch">
+          ¿Aún no tienes cuenta? <button class="auth-link" type="button" (click)="cambiarVista('registro')">Créala gratis</button>
+        </p>
       </form>
 
-      <form class="auth-form" *ngIf="vista === 'registro'" #registroForm="ngForm" (ngSubmit)="registrar(registroForm)" novalidate>
+      <form
+        id="panel-registro"
+        class="auth-form"
+        role="tabpanel"
+        aria-labelledby="tab-registro"
+        *ngIf="vista === 'registro'"
+        #registroForm="ngForm"
+        (ngSubmit)="registrar(registroForm)"
+        novalidate
+      >
         <div class="form-group">
           <label for="registerName">Nombre completo</label>
-          <input id="registerName" name="nombre" autocomplete="name" [(ngModel)]="registro.nombre" #nombre="ngModel" required minlength="3" [class.is-invalid]="nombre.invalid && nombre.touched" />
+          <input id="registerName" name="nombre" autocomplete="name" [(ngModel)]="registro.nombre" #nombre="ngModel" required minlength="3" maxlength="60" [class.is-invalid]="nombre.invalid && nombre.touched" />
           <small class="field-error" *ngIf="nombre.invalid && nombre.touched">Mínimo 3 caracteres.</small>
         </div>
         <div class="form-group">
           <label for="registerEmail">Correo electrónico</label>
-          <input id="registerEmail" name="email" type="email" autocomplete="email" [(ngModel)]="registro.email" #regEmail="ngModel" required email [class.is-invalid]="regEmail.invalid && regEmail.touched" />
+          <input id="registerEmail" name="email" type="email" autocomplete="email" placeholder="tu@email.com" [(ngModel)]="registro.email" #regEmail="ngModel" required email [class.is-invalid]="regEmail.invalid && regEmail.touched" />
           <small class="field-error" *ngIf="regEmail.invalid && regEmail.touched">Ingresa un correo válido.</small>
         </div>
         <div class="form-group">
           <label for="registerPassword">Contraseña</label>
           <div class="password-field">
-            <input id="registerPassword" name="password" [type]="verPassword ? 'text' : 'password'" autocomplete="new-password" [(ngModel)]="registro.password" #regPassword="ngModel" required minlength="6" [class.is-invalid]="regPassword.invalid && regPassword.touched" />
-            <button class="password-toggle" type="button" (click)="verPassword = !verPassword">{{ verPassword ? 'Ocultar' : 'Mostrar' }}</button>
+            <input
+              id="registerPassword"
+              name="password"
+              [type]="verPassword ? 'text' : 'password'"
+              autocomplete="new-password"
+              aria-describedby="passwordStrength"
+              [(ngModel)]="registro.password"
+              #regPassword="ngModel"
+              required
+              minlength="6"
+              maxlength="72"
+              [class.is-invalid]="regPassword.invalid && regPassword.touched"
+              (keyup)="detectarBloqMayus($event)"
+              (blur)="bloqMayus = false"
+            />
+            <button class="password-toggle" type="button" [attr.aria-pressed]="verPassword" [attr.aria-label]="verPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="verPassword = !verPassword">
+              {{ verPassword ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+          <div id="passwordStrength" class="password-strength" *ngIf="registro.password" [attr.data-nivel]="fuerzaPassword.nivel" aria-live="polite">
+            <div class="password-strength__bar" aria-hidden="true">
+              <span *appRepetir="3; let i = index" [class.on]="i < fuerzaPassword.nivel"></span>
+            </div>
+            <small>Seguridad: {{ fuerzaPassword.etiqueta }}</small>
           </div>
           <small class="field-error" *ngIf="regPassword.invalid && regPassword.touched">Mínimo 6 caracteres.</small>
+          <small class="field-hint field-hint--warning" *ngIf="bloqMayus" role="status">⇪ Bloq Mayús está activado.</small>
         </div>
         <div class="form-group">
           <label for="registerPasswordConfirm">Repetir contraseña</label>
-          <input id="registerPasswordConfirm" name="confirmar" [type]="verPassword ? 'text' : 'password'" autocomplete="new-password" [(ngModel)]="registro.confirmar" required />
+          <input
+            id="registerPasswordConfirm"
+            name="confirmar"
+            [type]="verPassword ? 'text' : 'password'"
+            autocomplete="new-password"
+            [(ngModel)]="registro.confirmar"
+            #confirmar="ngModel"
+            required
+            [class.is-invalid]="(confirmar.touched && confirmar.invalid) || (passwordsNoCoinciden && (confirmar.touched || confirmar.dirty))"
+          />
+          <small class="field-error" *ngIf="confirmar.touched && confirmar.invalid">Repite tu contraseña.</small>
+          <small class="field-error" *ngIf="passwordsNoCoinciden && (confirmar.touched || confirmar.dirty)">Las contraseñas no coinciden.</small>
         </div>
         <label class="checkbox-label auth-terms">
           <input type="checkbox" name="terminos" [(ngModel)]="registro.terminos" #terminos="ngModel" required /> Acepto los términos y condiciones.
@@ -62,31 +154,110 @@
         <small class="field-error" *ngIf="terminos.invalid && terminos.touched">Debes aceptar los términos.</small>
         <p class="auth-error" *ngIf="error" role="alert">{{ error }}</p>
         <button class="btn btn--primary btn--full btn--lg" type="submit" [disabled]="enviando">{{ enviando ? 'Creando cuenta...' : 'Crear cuenta' }}</button>
+        <p class="auth-switch">
+          ¿Ya tienes cuenta? <button class="auth-link" type="button" (click)="cambiarVista('login')">Inicia sesión</button>
+        </p>
       </form>
     </div>
 
-    <!-- Con sesión: perfil e historial de pedidos -->
+    <!-- Con sesión: perfil, resumen e historial de pedidos -->
     <ng-template #conSesion>
-      <div class="account__card auth-session-actions">
-        <div class="auth-session-avatar">{{ inicial }}</div>
-        <h3>Hola, {{ auth.usuario()?.nombre }}</h3>
-        <p>Sesión iniciada con {{ auth.usuario()?.email }}.</p>
-        <a class="btn btn--primary btn--full" routerLink="/cuenta/mascotas">🐾 Mis mascotas</a>
+      <div class="account__card account__profile">
+        <div class="account__profile-head">
+          <div class="auth-session-avatar" aria-hidden="true">{{ inicial }}</div>
+          <div>
+            <h3>Hola, {{ auth.usuario()?.nombre }}</h3>
+            <p>
+              {{ auth.usuario()?.email }}
+              <ng-container *ngIf="auth.usuario()?.creadoEn as creadoEn"> · Cliente desde {{ creadoEn | date: 'MMMM y' }}</ng-container>
+            </p>
+          </div>
+        </div>
+
+        <dl class="account-stats" [attr.aria-busy]="cargandoPedidos">
+          <div class="account-stats__item">
+            <dt>Pedidos</dt>
+            <dd>{{ cargandoPedidos ? '—' : pedidos.length }}</dd>
+          </div>
+          <div class="account-stats__item">
+            <dt>Total pagado</dt>
+            <dd>{{ cargandoPedidos ? '—' : (totalGastado | soles) }}</dd>
+          </div>
+          <div class="account-stats__item">
+            <dt>Suscripciones</dt>
+            <dd>{{ cargandoPedidos ? '—' : suscripciones }}</dd>
+          </div>
+        </dl>
+
+        <div class="account__actions">
+          <a class="btn btn--primary" routerLink="/cuenta/mascotas">🐾 Mis mascotas</a>
+          <a class="btn btn--outline" routerLink="/productos">Seguir comprando</a>
+        </div>
         <button class="btn btn--ghost btn--full" type="button" (click)="cerrarSesion()">Cerrar sesión</button>
       </div>
 
       <div class="account__card account__orders">
-        <h3>Mis pedidos</h3>
-        <p class="pets-empty" *ngIf="!cargandoPedidos && !pedidos.length">
-          Aún no tienes pedidos. <a routerLink="/productos">Explora el catálogo</a>.
-        </p>
-        <article class="order-row" *ngFor="let p of pedidos">
-          <div>
-            <strong>N° {{ p.numero }}</strong>
-            <small>{{ p.fecha | date: 'mediumDate' }} · {{ descripcion(p) }}</small>
+        <div class="account__orders-head">
+          <h3>Mis pedidos</h3>
+          <div class="order-filters" role="group" aria-label="Filtrar pedidos" *ngIf="pedidos.length">
+            <button
+              *ngFor="let f of filtros"
+              class="order-filter"
+              type="button"
+              [class.active]="filtro === f.valor"
+              [attr.aria-pressed]="filtro === f.valor"
+              (click)="filtro = f.valor"
+            >{{ f.etiqueta }}</button>
           </div>
-          <span class="order-row__total">{{ p.total | soles }}</span>
-        </article>
+        </div>
+
+        <div *ngIf="cargandoPedidos" aria-hidden="true">
+          <div class="order-skeleton" *appRepetir="3">
+            <span class="skeleton__line"></span>
+            <span class="skeleton__line skeleton__line--short"></span>
+          </div>
+        </div>
+
+        <div class="auth-error account__orders-error" *ngIf="!cargandoPedidos && errorPedidos" role="alert">
+          <span>No pudimos cargar tus pedidos: {{ errorPedidos }}</span>
+          <button class="auth-link" type="button" (click)="cargarPedidos()">Reintentar</button>
+        </div>
+
+        <ng-container *ngIf="!cargandoPedidos && !errorPedidos">
+          <p class="pets-empty" *ngIf="!pedidos.length">
+            Aún no tienes pedidos. <a routerLink="/productos">Explora el catálogo</a>.
+          </p>
+          <p class="pets-empty" *ngIf="pedidos.length && !pedidosFiltrados.length">No tienes pedidos de este tipo.</p>
+
+          <details class="order-row" *ngFor="let p of pedidosFiltrados; trackBy: porId">
+            <summary class="order-row__summary">
+              <div class="order-row__info">
+                <strong>
+                  N° {{ p.numero }}
+                  <span class="order-badge" [class.order-badge--sub]="p.tipo === 'suscripcion'">{{ p.tipo === 'suscripcion' ? 'Suscripción' : 'Compra' }}</span>
+                </strong>
+                <small>{{ p.fecha | date: "d MMM y, HH:mm" }} · {{ descripcion(p) }}</small>
+              </div>
+              <span class="order-row__total">{{ p.total | soles }}</span>
+            </summary>
+
+            <div class="order-row__detail">
+              <ul class="order-lines" *ngIf="p.items?.length">
+                <li *ngFor="let item of p.items">
+                  <span>{{ item.cantidad }} × {{ item.nombre }}</span>
+                  <span>{{ item.precio * item.cantidad | soles }}</span>
+                </li>
+              </ul>
+              <p class="order-delivery" *ngIf="p.entrega">📍 {{ p.entrega.direccion }} · 🕒 {{ p.entrega.horario }}</p>
+              <dl class="order-totals">
+                <div *ngIf="p.igv > 0"><dt>Subtotal</dt><dd>{{ p.subtotal | soles }}</dd></div>
+                <div *ngIf="p.igv > 0"><dt>IGV (18%)</dt><dd>{{ p.igv | soles }}</dd></div>
+                <div><dt>Pagado con</dt><dd>{{ metodoPago(p) }}</dd></div>
+                <div class="order-totals__total"><dt>Total</dt><dd>{{ p.total | soles }}</dd></div>
+              </dl>
+            </div>
+          </details>
+        </ng-container>
       </div>
     </ng-template>
   </div>

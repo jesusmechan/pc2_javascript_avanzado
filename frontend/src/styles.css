@@ -2029,12 +2029,202 @@ textarea.is-invalid {
   color: var(--color-text-muted);
 }
 
-.order-row {
+.auth-form .checkbox-label {
   display: flex;
-  justify-content: space-between;
+  margin-bottom: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-form input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  padding: 0;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+}
+
+.auth-form .auth-terms {
+  margin-bottom: 1rem;
+}
+
+.auth-form .auth-terms + .field-error {
+  margin: -0.75rem 0 1rem;
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.field-hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.field-hint--warning {
+  color: #9a6a2f;
+}
+
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.45rem;
+}
+
+.password-strength small {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.password-strength__bar {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
+}
+
+.password-strength__bar span {
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-alt);
+  transition: background var(--transition);
+}
+
+.password-strength[data-nivel='1'] .on { background: #c0566f; }
+.password-strength[data-nivel='2'] .on { background: var(--color-accent); }
+.password-strength[data-nivel='3'] .on { background: var(--color-success); }
+
+.account__profile {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.account__profile-head {
+  display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.account__profile-head .auth-session-avatar {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.account__profile-head h3 {
+  margin-bottom: 0.15rem;
+}
+
+.account__profile-head p {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.account-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.account-stats__item {
+  padding: 0.85rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  text-align: center;
+}
+
+.account-stats dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.account-stats dd {
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.account__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.account__orders-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.account__orders-head h3 {
+  margin-bottom: 0;
+}
+
+.order-filters {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+}
+
+.order-filter {
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.order-filter.active {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.account__orders-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.order-skeleton {
   padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.order-skeleton .skeleton__line {
+  display: block;
+  width: 70%;
+}
+
+.order-skeleton .skeleton__line--short {
+  width: 40%;
+  margin-bottom: 0;
+}
+
+.order-row {
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -2042,9 +2232,112 @@ textarea.is-invalid {
   border-bottom: none;
 }
 
+.order-row__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  list-style: none;
+  cursor: pointer;
+}
+
+.order-row__summary::-webkit-details-marker {
+  display: none;
+}
+
+.order-row__summary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--color-text-muted);
+  border-bottom: 2px solid var(--color-text-muted);
+  transform: rotate(45deg);
+  transition: transform var(--transition);
+}
+
+.order-row[open] .order-row__summary::after {
+  transform: rotate(-135deg);
+}
+
+.order-row__summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.order-row__info {
+  flex: 1;
+  min-width: 0;
+}
+
 .order-row__total {
   font-weight: 700;
   color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.order-badge {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-alt);
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.order-badge--sub {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.order-row__detail {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  font-size: 0.85rem;
+}
+
+.order-lines {
+  list-style: none;
+  margin-bottom: 0.75rem;
+}
+
+.order-lines li,
+.order-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.25rem 0;
+}
+
+.order-delivery {
+  margin-bottom: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.order-totals {
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+.order-totals dt {
+  color: var(--color-text-muted);
+}
+
+.order-totals__total {
+  font-weight: 700;
+}
+
+.order-totals__total dt {
+  color: var(--color-text);
 }
 
 .pets-empty a,
@@ -2119,5 +2412,13 @@ textarea.is-invalid {
   .checkout__summary,
   .account__card {
     padding: 1.25rem;
+  }
+
+  .account__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .account-stats dd {
+    font-size: 1.05rem;
   }
 }

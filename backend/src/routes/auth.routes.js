@@ -8,7 +8,7 @@ import { validar } from '../validators/validar.js';
 
 export const authRouter = Router();
 
-const perfil = ({ id, nombre, email, rol }) => ({ id, nombre, email, rol });
+const perfil = ({ id, nombre, email, rol, creadoEn }) => ({ id, nombre, email, rol, creadoEn });
 const sesion = (usuario) => ({ token: emitirToken(usuario), usuario: perfil(usuario) });
 
 authRouter.post('/registro', async (req, res) => {
