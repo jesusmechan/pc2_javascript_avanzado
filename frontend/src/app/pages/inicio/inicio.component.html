@@ -1,113 +1,141 @@
-<div class="container">
-  <section class="hero mb-4 aparecer">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-7">
-        <span class="hero-badge mb-3"><i class="bi bi-stars"></i>Sistema de gestión bibliotecaria</span>
-        <h1 class="mb-3">Tu biblioteca, <em>organizada</em> y siempre a la mano.</h1>
-        <p class="lead mb-4">
-          Administra el catálogo de libros, controla el stock y registra los préstamos de los lectores desde un
-          solo lugar.
-        </p>
-        <div class="d-flex gap-2 flex-wrap">
-          <a routerLink="/libros" class="btn btn-accent btn-lg"><i class="bi bi-search"></i>Explorar catálogo</a>
-          <a routerLink="/prestamos" class="btn btn-outline-light btn-lg">
-            <i class="bi bi-journal-plus"></i>Registrar préstamo
-          </a>
-        </div>
+<section class="hero" id="inicio">
+  <div class="hero__bg">
+    <div class="hero__blob hero__blob--1"></div>
+    <div class="hero__blob hero__blob--2"></div>
+    <div class="hero__blob hero__blob--3"></div>
+  </div>
+  <div class="container hero__content">
+    <div class="hero__text">
+      <span class="hero__tag">🌟 Envío gratis en compras +S/ 150</span>
+      <h1>Todo lo que tu <span class="text-gradient">mascota</span> necesita, en un solo lugar</h1>
+      <p>Alimentos premium, juguetes, accesorios y cuidado personal para perros, gatos y más. Calidad que ellos merecen.</p>
+      <div class="hero__cta">
+        <a routerLink="/productos" class="btn btn--primary btn--lg">Ver productos</a>
+        <a routerLink="/" fragment="categorias" class="btn btn--outline btn--lg">Explorar categorías</a>
       </div>
-      <div class="col-lg-5 d-none d-lg-block">
-        <div class="cover-fan" *ngIf="portadas.length">
-          <img *ngFor="let l of portadas" [src]="l.portada" [alt]="'Portada de ' + l.titulo" />
-        </div>
+      <div class="hero__stats">
+        <div class="stat"><strong>500+</strong><span>Productos</span></div>
+        <div class="stat"><strong>12k+</strong><span>Clientes felices</span></div>
+        <div class="stat"><strong>4.9★</strong><span>Valoración</span></div>
       </div>
     </div>
-  </section>
-
-  <div class="alert alert-danger aparecer" *ngIf="error">
-    <i class="bi bi-exclamation-triangle"></i>
-    <span>No se pudo conectar con la API. Ejecuta <code>npm run api</code> para iniciar el backend.</span>
-  </div>
-
-  <div class="row g-3 g-lg-4 mb-5">
-    <div
-      class="col-sm-6 col-xl-3 aparecer"
-      *ngFor="let ind of indicadores; let i = index"
-      [style.animation-delay.ms]="100 + i * 70"
-    >
-      <div class="card stat-card" appResaltar>
-        <span class="icon-tile tile-{{ ind.color }}"><i class="bi" [class]="ind.icono"></i></span>
-        <div class="min-w-0">
-          <div class="stat-label">{{ ind.titulo }}</div>
-          <div class="stat-value" *ngIf="ind.moneda; else numero">{{ ind.valor | currency: 'PEN' : 'S/' : '1.0-0' }}</div>
-          <ng-template #numero>
-            <div class="stat-value">{{ ind.valor | number }}</div>
-          </ng-template>
+    <div class="hero__visual">
+      <div class="hero__image-wrapper">
+        <img
+          src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=700&fit=crop"
+          alt="Perro feliz con su dueño"
+          class="hero__image"
+          (error)="usarImagenRespaldo($event)"
+        />
+        <div class="hero__float-card hero__float-card--1">
+          <span>🦴</span>
+          <div><strong>Huesos Premium</strong><small>Desde S/ 18.90</small></div>
+        </div>
+        <div class="hero__float-card hero__float-card--2">
+          <span>🐱</span>
+          <div><strong>+2,400 vendidos</strong><small>Alimento gato</small></div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="row g-4">
-    <div class="col-lg-8 aparecer" style="animation-delay: 300ms" *ngIf="recientes.length">
-      <div class="d-flex align-items-end justify-content-between mb-3">
-        <div>
-          <div class="eyebrow"><i class="bi bi-clock-history"></i>Novedades</div>
-          <h2 class="section-title">Agregados recientemente</h2>
-        </div>
-        <a routerLink="/libros" class="btn btn-ghost btn-sm">Ver todo <i class="bi bi-arrow-right"></i></a>
-      </div>
-      <div class="row g-3">
-        <div class="col-6 col-md-3" *ngFor="let l of recientes">
-          <a class="text-decoration-none d-block h-100" [routerLink]="['/libros', l.id]">
-            <div class="card book-card" appResaltar>
-              <div class="book-cover">
-                <img
-                  [src]="l.portada"
-                  [alt]="l.titulo"
-                  class="cargada"
-                  (load)="usarPortadaPorDefecto($event)"
-                  (error)="usarPortadaPorDefecto($event)"
-                />
-              </div>
-              <div class="p-3">
-                <div class="book-title fs-6">{{ l.titulo }}</div>
-                <div class="small text-muted text-truncate">{{ l.autor | titlecase }}</div>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
+<section class="categories" id="categorias">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Categorías</span>
+      <h2>Encuentra por tipo de mascota</h2>
+      <p>Selecciona una categoría para ver sus productos</p>
     </div>
-
-    <div class="col-lg-4 aparecer" style="animation-delay: 380ms">
-      <div class="eyebrow"><i class="bi bi-lightning-charge"></i>Atajos</div>
-      <h2 class="section-title mb-3">Acciones rápidas</h2>
-      <div class="d-grid gap-3">
-        <a routerLink="/libros/nuevo" class="card shortcut" appResaltar>
-          <span class="icon-tile tile-primary"><i class="bi bi-plus-lg"></i></span>
-          <div>
-            <div class="fw-semibold">Registrar libro</div>
-            <div class="small text-muted">Agrega un título al catálogo</div>
-          </div>
-          <i class="bi bi-arrow-right"></i>
-        </a>
-        <a routerLink="/prestamos" class="card shortcut" appResaltar>
-          <span class="icon-tile tile-warning"><i class="bi bi-journal-arrow-up"></i></span>
-          <div>
-            <div class="fw-semibold">Nuevo préstamo</div>
-            <div class="small text-muted">Presta un ejemplar a un lector</div>
-          </div>
-          <i class="bi bi-arrow-right"></i>
-        </a>
-        <a routerLink="/libros" class="card shortcut" appResaltar>
-          <span class="icon-tile tile-success"><i class="bi bi-grid"></i></span>
-          <div>
-            <div class="fw-semibold">Explorar catálogo</div>
-            <div class="small text-muted">Busca y filtra por categoría</div>
-          </div>
-          <i class="bi bi-arrow-right"></i>
-        </a>
-      </div>
+    <div class="alert alert--error" *ngIf="error">
+      No se pudo conectar con la API. Ejecuta <code>npm run api</code> para iniciar el backend.
+    </div>
+    <div class="categories__grid">
+      <a class="category-card" routerLink="/productos">
+        <span class="category-card__icon">🐾</span>
+        <span class="category-card__name">Todos</span>
+      </a>
+      <a class="category-card" *ngFor="let c of categorias" routerLink="/productos" [queryParams]="{ categoria: c.clave }">
+        <span class="category-card__icon">{{ c.icono }}</span>
+        <span class="category-card__name">{{ c.nombre }}</span>
+      </a>
     </div>
   </div>
-</div>
+</section>
+
+<section class="products" *ngIf="destacados.length">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Catálogo</span>
+      <h2>Productos destacados</h2>
+      <p>Los mejores productos seleccionados para el bienestar de tu compañero</p>
+    </div>
+    <div class="products__grid">
+      <app-producto-card *ngFor="let p of destacados" [producto]="p" [categoria]="nombreCategoria(p.categoria)" />
+    </div>
+    <div class="products__more">
+      <a routerLink="/productos" class="btn btn--outline">Ver todo el catálogo →</a>
+    </div>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="container benefits__grid">
+    <div class="benefit-card" *ngFor="let b of beneficios">
+      <div class="benefit-card__icon">{{ b.icono }}</div>
+      <h3>{{ b.titulo }}</h3>
+      <p>{{ b.texto }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="about" id="nosotros">
+  <div class="container about__grid">
+    <div class="about__image">
+      <img
+        src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=500&fit=crop"
+        alt="Mascotas felices"
+        (error)="usarImagenRespaldo($event)"
+      />
+      <div class="about__badge"><strong>8+</strong><span>Años de experiencia</span></div>
+    </div>
+    <div class="about__content">
+      <span class="section-tag">Sobre nosotros</span>
+      <h2>Amamos a las mascotas tanto como tú</h2>
+      <p>
+        En DancyPet creemos que cada mascota merece lo mejor. Desde 2018, ofrecemos productos de calidad premium
+        seleccionados por expertos en bienestar animal.
+      </p>
+      <ul class="about__list">
+        <li>✓ Productos 100% originales y certificados</li>
+        <li>✓ Marcas reconocidas internacionalmente</li>
+        <li>✓ Precios competitivos y ofertas exclusivas</li>
+        <li>✓ Suscripción mensual de alimento para tu mascota</li>
+      </ul>
+      <a routerLink="/cuenta/mascotas" class="btn btn--primary" appResaltar>Calcula su suscripción mensual</a>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="container newsletter__inner">
+    <div class="newsletter__text">
+      <h2>🎁 Obtén 15% de descuento</h2>
+      <p>Suscríbete y recibe ofertas exclusivas para tu mascota</p>
+    </div>
+    <form class="newsletter__form" #form="ngForm" (ngSubmit)="suscribirNewsletter(form)" novalidate>
+      <input
+        type="email"
+        name="email"
+        placeholder="tu@email.com"
+        aria-label="Correo electrónico"
+        [(ngModel)]="correoNewsletter"
+        #email="ngModel"
+        required
+        email
+        [class.is-invalid]="email.invalid && email.touched"
+      />
+      <button type="submit" class="btn btn--primary">Suscribirme</button>
+    </form>
+  </div>
+</section>

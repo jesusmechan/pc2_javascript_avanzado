@@ -2,7 +2,7 @@ import { app } from './app.js';
 import { config } from './config.js';
 
 const servidor = app.listen(config.port, () => {
-  console.log(`API de la biblioteca escuchando en http://localhost:${config.port}`);
+  console.log(`API de DancyPet escuchando en http://localhost:${config.port}`);
 });
 
 servidor.on('error', (err) => {

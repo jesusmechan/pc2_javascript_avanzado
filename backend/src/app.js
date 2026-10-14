@@ -1,23 +1,29 @@
 import cors from 'cors';
 import express from 'express';
 import { config } from './config.js';
+import { leerSesion, requerirSesion } from './middlewares/autenticar.js';
 import { manejarErrores, rutaNoEncontrada } from './middlewares/manejar-errores.js';
+import { authRouter } from './routes/auth.routes.js';
 import { categoriasRouter } from './routes/categorias.routes.js';
-import { librosRouter } from './routes/libros.routes.js';
-import { prestamosRouter } from './routes/prestamos.routes.js';
+import { mascotasRouter } from './routes/mascotas.routes.js';
+import { pedidosRouter } from './routes/pedidos.routes.js';
+import { productosRouter } from './routes/productos.routes.js';
 
 export const app = express();
 
 app.disable('x-powered-by');
 app.use(cors({ origin: config.corsOrigins }));
-app.use(express.json());
+// Límite ampliado porque la foto de la mascota viaja como data URL dentro del JSON.
+app.use(express.json({ limit: '2mb' }));
+app.use(leerSesion);
 
 app.get('/health', (_req, res) => res.json({ estado: 'ok' }));
 
-// Mismas rutas que exponía json-server, para que el frontend no cambie.
-app.use('/libros', librosRouter);
+app.use('/auth', authRouter);
 app.use('/categorias', categoriasRouter);
-app.use('/prestamos', prestamosRouter);
+app.use('/productos', productosRouter);
+app.use('/mascotas', requerirSesion, mascotasRouter);
+app.use('/pedidos', pedidosRouter);
 
 app.use(rutaNoEncontrada);
 app.use(manejarErrores);

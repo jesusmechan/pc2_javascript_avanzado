@@ -1,33 +1,45 @@
-<nav class="navbar navbar-expand-lg app-navbar sticky-top">
-  <div class="container">
-    <a class="brand" routerLink="/">
-      <span class="brand-logo"><i class="bi bi-book-half"></i></span>
-      <span>Biblio<span class="brand-accent">UTP</span></span>
+<header class="header" [class.scrolled]="conScroll()">
+  <nav class="nav container">
+    <a routerLink="/" class="logo" (click)="cerrarMenu()">
+      <img src="/imagenes/logo.png" alt="Logo DancyPet" class="logo__icon" />
+      <span class="logo__text">Dancy<em>Pet</em></span>
     </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#menuPrincipal"
-      aria-controls="menuPrincipal"
-      aria-expanded="false"
-      aria-label="Mostrar menú"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="menuPrincipal">
-      <ul class="navbar-nav ms-auto gap-lg-1">
-        <li class="nav-item" *ngFor="let e of enlaces">
-          <a
-            class="nav-link"
-            [routerLink]="e.ruta"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: e.exacto }"
-          >
-            <i class="bi" [ngClass]="e.icono"></i>{{ e.texto }}
-          </a>
-        </li>
-      </ul>
+
+    <ul class="nav__links" [class.open]="menuAbierto()">
+      <li *ngFor="let e of enlaces">
+        <a
+          [routerLink]="e.ruta"
+          [fragment]="e.fragmento"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="e.activo"
+          (click)="cerrarMenu()"
+          >{{ e.texto }}</a
+        >
+      </li>
+    </ul>
+
+    <div class="nav__actions">
+      <a class="btn-account" routerLink="/cuenta" routerLinkActive="active" (click)="cerrarMenu()">
+        <span aria-hidden="true">{{ auth.autenticado() ? '🐾' : '◯' }}</span>
+        <span>{{ auth.autenticado() ? 'Hola, ' + auth.primerNombre() : 'Iniciar sesión' }}</span>
+      </a>
+      <button class="btn-cart" type="button" (click)="carrito.abierto.set(true)" aria-label="Abrir carrito">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1" />
+          <circle cx="20" cy="21" r="1" />
+          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+        </svg>
+        <span class="btn-cart__badge" [class.bump]="badgeAnimado()">{{ carrito.cantidadTotal() }}</span>
+      </button>
+      <button
+        class="nav__toggle"
+        type="button"
+        (click)="menuAbierto.set(!menuAbierto())"
+        [attr.aria-expanded]="menuAbierto()"
+        aria-label="Menú"
+      >
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </div>
-</nav>
+  </nav>
+</header>

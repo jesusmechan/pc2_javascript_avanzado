@@ -1,0 +1,42 @@
+<div class="cart-overlay" [class.active]="carrito.abierto()" (click)="cerrar()"></div>
+
+<aside class="cart-panel" [class.active]="carrito.abierto()" aria-label="Carrito de compras" [attr.aria-hidden]="!carrito.abierto()" [inert]="!carrito.abierto()">
+  <div class="cart-header">
+    <h2>🛒 Tu carrito</h2>
+    <button class="btn-icon" type="button" (click)="cerrar()" aria-label="Cerrar carrito">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+    </button>
+  </div>
+
+  <div class="cart-items">
+    <div class="cart-empty" *ngIf="carrito.estaVacio()">
+      <span class="cart-empty-icon">🐾</span>
+      <p>Tu carrito está vacío</p>
+      <small>¡Agrega productos para consentir a tu mascota!</small>
+    </div>
+
+    <div class="cart-item" *ngFor="let item of carrito.items(); trackBy: porId">
+      <img class="cart-item__image" [src]="item.producto.imagen" [alt]="item.producto.nombre" (error)="usarImagenRespaldo($event)" />
+      <div class="cart-item__info">
+        <div class="cart-item__name">{{ item.producto.nombre }}</div>
+        <div class="cart-item__price">{{ item.producto.precio | soles }}</div>
+        <div class="cart-item__controls">
+          <button class="qty-btn" type="button" (click)="carrito.cambiarCantidad(item.producto.id, -1)" aria-label="Disminuir cantidad">−</button>
+          <span class="cart-item__qty">{{ item.cantidad }}</span>
+          <button class="qty-btn" type="button" (click)="carrito.cambiarCantidad(item.producto.id, 1)" aria-label="Aumentar cantidad">+</button>
+        </div>
+      </div>
+      <button class="cart-item__remove" type="button" (click)="carrito.eliminar(item.producto.id)" [attr.aria-label]="'Eliminar ' + item.producto.nombre">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="cart-footer" *ngIf="!carrito.estaVacio()">
+    <div class="cart-summary"><span>Subtotal</span><span>{{ carrito.subtotal() | soles }}</span></div>
+    <div class="cart-summary"><span>IGV (18%)</span><span>{{ carrito.igv() | soles }}</span></div>
+    <div class="cart-summary cart-summary--total"><span>Total</span><span>{{ carrito.total() | soles }}</span></div>
+    <button class="btn btn--primary btn--full" type="button" (click)="finalizarCompra()">Finalizar compra</button>
+    <button class="btn btn--ghost btn--full" type="button" (click)="vaciar()">Vaciar carrito</button>
+  </div>
+</aside>

@@ -1,0 +1,178 @@
+<section class="page">
+  <div class="container">
+    <ng-container *ngIf="!confirmado">
+      <div class="checkout-empty" *ngIf="!esSuscripcion && carrito.estaVacio(); else checkout">
+        <span class="cart-empty-icon">🛒</span>
+        <h2>Tu carrito está vacío</h2>
+        <p>Agrega productos antes de finalizar la compra.</p>
+        <a routerLink="/productos" class="btn btn--primary">Ver productos</a>
+      </div>
+    </ng-container>
+
+    <ng-template #checkout>
+      <div class="checkout">
+        <div class="checkout__card">
+          <div class="payment-header">
+            <span class="section-tag">Pago seguro</span>
+            <h3>{{ esSuscripcion ? 'Activa tu suscripción mensual' : 'Completa tu compra' }}</h3>
+            <p class="payment-total">
+              {{ esSuscripcion ? 'Cargo mensual: ' : 'Total a pagar: ' }}<strong>{{ total | soles }}</strong>
+            </p>
+          </div>
+
+          <div class="payment-methods" *ngIf="!esSuscripcion">
+            <button
+              type="button"
+              class="payment-method"
+              *ngFor="let m of metodos"
+              [class.active]="metodo === m.valor"
+              (click)="metodo = m.valor; error = ''"
+            >
+              <span>{{ m.icono }}</span> {{ m.texto }}
+            </button>
+          </div>
+
+          <form class="payment-form" (ngSubmit)="pagar()" novalidate>
+            <ng-container *ngIf="esSuscripcion || metodo === 'tarjeta'">
+              <div class="payment-card-preview">
+                <div class="card-preview">
+                  <div class="card-preview__chip"></div>
+                  <div class="card-preview__number">{{ tarjeta.numero || '•••• •••• •••• ••••' }}</div>
+                  <div class="card-preview__footer">
+                    <div><small>Titular</small><span>{{ (tarjeta.titular | uppercase) || 'TU NOMBRE' }}</span></div>
+                    <div><small>Vence</small><span>{{ tarjeta.vencimiento || 'MM/AA' }}</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cardNumber">Número de tarjeta</label>
+                <input id="cardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456" [value]="tarjeta.numero" (input)="alEscribirNumero($event)" />
+              </div>
+              <div class="form-group">
+                <label for="cardName">Nombre del titular</label>
+                <input id="cardName" name="titular" autocomplete="cc-name" placeholder="Como aparece en la tarjeta" [(ngModel)]="tarjeta.titular" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="cardExpiry">Vencimiento</label>
+                  <input id="cardExpiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/AA" [value]="tarjeta.vencimiento" (input)="alEscribirVencimiento($event)" />
+                </div>
+                <div class="form-group">
+                  <label for="cardCvv">CVV</label>
+                  <input id="cardCvv" type="password" inputmode="numeric" autocomplete="cc-csc" placeholder="•••" [value]="tarjeta.cvv" (input)="alEscribirCvv($event)" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="cardEmail">Correo electrónico</label>
+                <input id="cardEmail" name="emailTarjeta" type="email" autocomplete="email" placeholder="tu@email.com" [(ngModel)]="tarjeta.email" />
+              </div>
+              <p class="payment-hint">Tarjeta de prueba: 4111 1111 1111 1111, cualquier fecha futura y CVV 123.</p>
+            </ng-container>
+
+            <ng-container *ngIf="!esSuscripcion && metodo === 'yape'">
+              <div class="payment-alt">
+                <div class="payment-alt__icon">📱</div>
+                <p>Escanea el código o envía el monto al número:</p>
+                <strong class="payment-alt__number">999 888 777</strong>
+                <p class="payment-alt__hint">Luego ingresa los datos de tu operación</p>
+              </div>
+              <div class="form-group">
+                <label for="yapePhone">Tu número de celular</label>
+                <input id="yapePhone" type="tel" inputmode="numeric" placeholder="987654321" [value]="yape.telefono" (input)="alEscribirTelefono($event, yape)" />
+              </div>
+              <div class="form-group">
+                <label for="yapeCode">Código de operación</label>
+                <input id="yapeCode" name="codigoOperacion" maxlength="12" placeholder="Ej: 202603021234" [(ngModel)]="yape.codigoOperacion" />
+              </div>
+              <div class="form-group">
+                <label for="yapeEmail">Correo electrónico</label>
+                <input id="yapeEmail" name="emailYape" type="email" placeholder="tu@email.com" [(ngModel)]="yape.email" />
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="!esSuscripcion && metodo === 'efectivo'">
+              <div class="payment-alt">
+                <div class="payment-alt__icon">🚚</div>
+                <p>Paga en efectivo cuando recibas tu pedido en la puerta de tu casa.</p>
+              </div>
+              <div class="form-group">
+                <label for="cashName">Nombre completo</label>
+                <input id="cashName" name="nombre" placeholder="Juan Pérez" [(ngModel)]="efectivo.nombre" />
+              </div>
+              <div class="form-group">
+                <label for="cashPhone">Teléfono de contacto</label>
+                <input id="cashPhone" type="tel" inputmode="numeric" placeholder="987654321" [value]="efectivo.telefono" (input)="alEscribirTelefono($event, efectivo)" />
+              </div>
+              <div class="form-group">
+                <label for="cashAddress">Dirección de entrega</label>
+                <textarea id="cashAddress" name="direccion" rows="2" placeholder="Av. Ejemplo 123, Lima" [(ngModel)]="efectivo.direccion"></textarea>
+              </div>
+            </ng-container>
+
+            <p class="auth-error" *ngIf="error" role="alert">{{ error }}</p>
+
+            <button type="submit" class="btn btn--primary btn--full btn--lg" [disabled]="procesando">
+              <ng-container *ngIf="procesando; else textoBoton">Procesando...</ng-container>
+              <ng-template #textoBoton>
+                {{ esSuscripcion || metodo === 'tarjeta' ? '🔒 Pagar ahora' : metodo === 'yape' ? 'Confirmar pago' : 'Confirmar pedido' }}
+              </ng-template>
+            </button>
+          </form>
+
+          <p class="payment-secure">🔒 Tus datos están protegidos. No almacenamos el número de tu tarjeta ni el CVV.</p>
+        </div>
+
+        <aside class="checkout__summary">
+          <h3>Resumen</h3>
+          <ng-container *ngIf="pendiente as p; else resumenCarrito">
+            <div class="summary-pet">
+              <span class="pet-card__avatar">
+                <img *ngIf="p.mascota.foto; else icono" [src]="p.mascota.foto" [alt]="p.mascota.nombre" />
+                <ng-template #icono>{{ p.mascota.icono }}</ng-template>
+              </span>
+              <div>
+                <strong>Suscripción de {{ p.mascota.nombre }}</strong>
+                <small>{{ p.mascota.suscripcion.kgMensuales }} kg de comida al mes</small>
+              </div>
+            </div>
+            <div class="cart-summary"><span>Comida</span><span>{{ p.mascota.suscripcion.costoComida | soles }}</span></div>
+            <div class="cart-summary"><span>Premios</span><span>{{ p.mascota.suscripcion.costoPremios | soles }}</span></div>
+            <div class="cart-summary"><span>Entregas semanales</span><span>{{ p.mascota.suscripcion.costoEnvios | soles }}</span></div>
+            <div class="cart-summary"><span>Descuento suscripción</span><span>− {{ p.mascota.suscripcion.descuentoSuscripcion | soles }}</span></div>
+            <div class="cart-summary cart-summary--total"><span>Total mensual</span><span>{{ total | soles }}</span></div>
+            <p class="summary-note">📍 {{ p.entrega.direccion }}<br />🕒 {{ p.entrega.horario }}</p>
+          </ng-container>
+
+          <ng-template #resumenCarrito>
+            <div class="summary-item" *ngFor="let item of carrito.items()">
+              <span>{{ item.cantidad }} × {{ item.producto.nombre }}</span>
+              <span>{{ item.producto.precio * item.cantidad | soles }}</span>
+            </div>
+            <div class="cart-summary"><span>Subtotal</span><span>{{ carrito.subtotal() | soles }}</span></div>
+            <div class="cart-summary"><span>IGV (18%)</span><span>{{ carrito.igv() | soles }}</span></div>
+            <div class="cart-summary cart-summary--total"><span>Total</span><span>{{ carrito.total() | soles }}</span></div>
+          </ng-template>
+        </aside>
+      </div>
+    </ng-template>
+  </div>
+</section>
+
+<div class="modal" *ngIf="confirmado as pedido">
+  <div class="modal__backdrop"></div>
+  <div class="modal__content" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacion">
+    <div class="modal__icon">✅</div>
+    <h3 id="tituloConfirmacion">{{ pedido.tipo === 'suscripcion' ? '¡Suscripción activa!' : '¡Compra realizada!' }}</h3>
+    <p *ngIf="pedido.tipo === 'suscripcion'; else mensajeCompra">
+      La suscripción de {{ pedido.mascotaNombre }} quedó activa. Se realizará un cargo mensual de
+      {{ pedido.total | soles }} en tu tarjeta terminada en {{ pedido.pago.ultimos4 }}.
+    </p>
+    <ng-template #mensajeCompra>
+      <p>Tu pago con {{ nombreMetodo(pedido.pago.metodo) }} fue procesado correctamente. Tu pedido está en camino.</p>
+    </ng-template>
+    <p class="checkout-order">Pedido N° {{ pedido.numero }} — Total: {{ pedido.total | soles }}</p>
+    <button class="btn btn--primary" type="button" (click)="continuar()">
+      {{ pedido.tipo === 'suscripcion' ? 'Ver mis mascotas' : 'Continuar comprando' }}
+    </button>
+  </div>
+</div>

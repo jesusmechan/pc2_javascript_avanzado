@@ -1,11 +1,11 @@
-import { HttpError } from '../errors/http-error.js';
+import { datosInvalidos, HttpError } from '../errors/http-error.js';
 
 /**
  * Valida `datos` contra un esquema sencillo y devuelve solo los campos conocidos.
  * Con `parcial = true` (PATCH) los campos requeridos pueden omitirse.
  *
  * Reglas soportadas por campo: tipo ('string' | 'number' | 'integer' | 'boolean'),
- * requerido, defecto, min, max, minLength, maxLength, patron, mensaje.
+ * requerido, defecto, min, max, minLength, maxLength, patron, opciones, mensaje.
  */
 export function validar(esquema, datos, { parcial = false } = {}) {
   if (datos === null || typeof datos !== 'object' || Array.isArray(datos)) {
@@ -32,7 +32,7 @@ export function validar(esquema, datos, { parcial = false } = {}) {
   }
 
   if (Object.keys(errores).length > 0) {
-    throw new HttpError(400, 'Datos inválidos', errores);
+    throw datosInvalidos(errores);
   }
   return resultado;
 }
@@ -44,6 +44,7 @@ function validarCampo(valor, regla) {
   if (tipo === 'string' && typeof valor !== 'string') return 'Debe ser un texto';
   if (tipo === 'boolean' && typeof valor !== 'boolean') return 'Debe ser verdadero o falso';
 
+  if (regla.opciones && !regla.opciones.includes(valor)) return `Debe ser uno de: ${regla.opciones.join(', ')}`;
   if (regla.min !== undefined && valor < regla.min) return `Debe ser mayor o igual a ${regla.min}`;
   if (regla.max !== undefined && valor > regla.max) return `Debe ser menor o igual a ${regla.max}`;
   if (regla.minLength !== undefined && valor.length < regla.minLength) return `Debe tener al menos ${regla.minLength} caracteres`;

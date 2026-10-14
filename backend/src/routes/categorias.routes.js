@@ -1,4 +1,5 @@
 import { HttpError } from '../errors/http-error.js';
+import { requerirRol } from '../middlewares/autenticar.js';
 import { esquemaCategoria } from '../validators/esquemas.js';
 import { crearRouterCrud } from './crear-router-crud.js';
 
@@ -6,20 +7,20 @@ export const categoriasRouter = crearRouterCrud({
   coleccion: 'categorias',
   recurso: 'Categoría',
   esquema: esquemaCategoria,
+  proteger: [requerirRol('admin')],
   validarReglas: (categoria, { db, id }) => {
-    const nombre = categoria.nombre.toLowerCase();
-    if (db.categorias.some((c) => c.nombre.toLowerCase() === nombre && c.id !== id)) {
-      throw new HttpError(409, `La categoría "${categoria.nombre}" ya existe`);
+    if (db.categorias.some((c) => c.clave === categoria.clave && c.id !== id)) {
+      throw new HttpError(409, `La categoría "${categoria.clave}" ya existe`);
     }
-    // Los libros guardan el nombre de la categoría, así que renombrarla dejaría libros huérfanos.
+    // Los productos guardan la clave de la categoría, así que cambiarla dejaría productos huérfanos.
     const actual = db.categorias.find((c) => c.id === id);
-    if (actual && actual.nombre !== categoria.nombre && db.libros.some((l) => l.categoria === actual.nombre)) {
-      throw new HttpError(409, `La categoría "${actual.nombre}" tiene libros asociados y no puede renombrarse`);
+    if (actual && actual.clave !== categoria.clave && db.productos.some((p) => p.categoria === actual.clave)) {
+      throw new HttpError(409, `La categoría "${actual.nombre}" tiene productos asociados y su clave no puede cambiar`);
     }
   },
   validarEliminacion: (categoria, { db }) => {
-    if (db.libros.some((l) => l.categoria === categoria.nombre)) {
-      throw new HttpError(409, `La categoría "${categoria.nombre}" tiene libros asociados`);
+    if (db.productos.some((p) => p.categoria === categoria.clave)) {
+      throw new HttpError(409, `La categoría "${categoria.nombre}" tiene productos asociados`);
     }
   },
 });

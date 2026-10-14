@@ -9,12 +9,12 @@ export class ResaltarDirective {
   private renderer = inject(Renderer2);
 
   constructor() {
-    this.renderer.setStyle(this.el.nativeElement, 'transition', 'transform .2s, box-shadow .2s');
+    this.renderer.setStyle(this.el.nativeElement, 'transition', 'transform .3s, box-shadow .3s, border-color .3s');
   }
 
   @HostListener('mouseenter') alEntrar() {
     this.renderer.setStyle(this.el.nativeElement, 'transform', 'translateY(-6px)');
-    this.renderer.setStyle(this.el.nativeElement, 'box-shadow', this.sombra || 'var(--shadow-primary)');
+    this.renderer.setStyle(this.el.nativeElement, 'box-shadow', this.sombra || 'var(--shadow-md)');
   }
 
   @HostListener('mouseleave') alSalir() {

@@ -1,0 +1,28 @@
+<article class="product-card" appResaltar>
+  <a class="product-card__image-wrap" [routerLink]="['/productos', producto.id]" tabindex="-1" aria-hidden="true">
+    <img class="product-card__image" [src]="producto.imagen" [alt]="producto.nombre" loading="lazy" (error)="usarImagenRespaldo($event)" />
+    <span *ngIf="producto.badge" [appBadgeProducto]="producto.badge"></span>
+  </a>
+  <div class="product-card__body">
+    <span class="product-card__category">{{ categoria || producto.categoria }}</span>
+    <h3 class="product-card__name">
+      <a [routerLink]="['/productos', producto.id]">{{ producto.nombre }}</a>
+    </h3>
+    <p class="product-card__desc">{{ producto.descripcion | truncar: 90 }}</p>
+    <div class="product-card__footer">
+      <div>
+        <span class="product-card__price">{{ producto.precio | soles }}</span>
+        <span class="product-card__price-old" *ngIf="producto.precioAnterior">{{ producto.precioAnterior | soles }}</span>
+      </div>
+      <button
+        class="product-card__add"
+        type="button"
+        (click)="agregar()"
+        [disabled]="!producto.disponible"
+        [attr.aria-label]="'Agregar ' + producto.nombre + ' al carrito'"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14" /></svg>
+      </button>
+    </div>
+  </div>
+</article>

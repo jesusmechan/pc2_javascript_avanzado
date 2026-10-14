@@ -7,3 +7,5 @@ export class HttpError extends Error {
 }
 
 export const noEncontrado = (recurso, id) => new HttpError(404, `${recurso} con id ${id} no existe`);
+
+export const datosInvalidos = (detalles) => new HttpError(400, 'Datos inválidos', detalles);

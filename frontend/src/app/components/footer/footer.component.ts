@@ -1,26 +1,55 @@
-import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
-  imports: [DatePipe, RouterLink],
+  imports: [RouterLink],
   template: `
-    <footer class="app-footer py-4 mt-5">
-      <div class="container d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 small">
-        <div class="d-flex align-items-center gap-3">
-          <a class="brand" routerLink="/">
-            <span class="brand-logo"><i class="bi bi-book-half"></i></span>
-            <span>Biblio<span class="brand-accent">UTP</span></span>
+    <footer class="footer">
+      <div class="container footer__grid">
+        <div class="footer__brand">
+          <a routerLink="/" class="logo">
+            <img src="/imagenes/logo.png" alt="" class="logo__icon" />
+            <span class="logo__text">Dancy<em>Pet</em></span>
           </a>
-          <span class="d-none d-md-inline">&copy; {{ hoy | date: 'yyyy' }} · JavaScript Avanzado</span>
+          <p>Tu tienda de confianza para el cuidado y felicidad de tus mascotas.</p>
         </div>
-        <span><i class="bi bi-calendar3 me-2"></i><span class="d-inline-block first-upper">{{ hoy | date: 'fullDate' }}</span></span>
+        <div class="footer__col">
+          <h4>Tienda</h4>
+          <ul>
+            <li><a routerLink="/productos">Productos</a></li>
+            <li><a routerLink="/" fragment="categorias">Categorías</a></li>
+            <li><a routerLink="/cuenta/mascotas">Suscripción de alimento</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Ayuda</h4>
+          <ul>
+            <li><a routerLink="/cuenta">Mi cuenta</a></li>
+            <li>Envíos en 24-48 h</li>
+            <li>Devoluciones en 30 días</li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contacto</h4>
+          <ul>
+            <li>📍 Av. Ayacucho Mz. 9 lote 1A, Tablada Nueva</li>
+            <li>📞 +51 930 401 998</li>
+            <li>✉️ hola&#64;pawville.pe</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom container">
+        <p>&copy; {{ anio }} DancyPet. Todos los derechos reservados.</p>
+        <div class="footer__social">
+          <a href="#" aria-label="Facebook">FB</a>
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="TikTok">TK</a>
+        </div>
       </div>
     </footer>
   `,
-  styles: `.first-upper::first-letter { text-transform: uppercase; }`,
 })
 export class FooterComponent {
-  hoy = new Date();
+  anio = new Date().getFullYear();
 }
