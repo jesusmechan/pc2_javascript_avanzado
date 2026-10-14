@@ -1,7 +1,5 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, effect, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ItemCarrito } from '../../models/carrito';
 import { SolesPipe } from '../../pipes/soles.pipe';
 import { CarritoService } from '../../services/carrito.service';
 import { ToastService } from '../../services/toast.service';
@@ -9,7 +7,7 @@ import { usarImagenRespaldo } from '../../utils/imagen';
 
 @Component({
   selector: 'app-carrito-panel',
-  imports: [NgIf, NgFor, SolesPipe],
+  imports: [SolesPipe],
   templateUrl: './carrito-panel.component.html',
 })
 export class CarritoPanelComponent {
@@ -33,10 +31,6 @@ export class CarritoPanelComponent {
   finalizarCompra(): void {
     this.cerrar();
     this.router.navigate(['/pago']);
-  }
-
-  porId(_: number, item: ItemCarrito): number {
-    return item.producto.id;
   }
 
   vaciar(): void {

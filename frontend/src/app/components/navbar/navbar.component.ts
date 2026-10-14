@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { Component, effect, HostListener, inject, signal } from '@angular/core';
 import { IsActiveMatchOptions, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -10,7 +9,7 @@ const PAGINA: IsActiveMatchOptions = { paths: 'subset', fragment: 'ignored', que
 
 @Component({
   selector: 'app-navbar',
-  imports: [NgFor, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {

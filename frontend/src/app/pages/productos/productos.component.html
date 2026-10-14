@@ -11,16 +11,17 @@
         <span class="category-card__icon">🐾</span>
         <span class="category-card__name">Todos</span>
       </a>
-      <a
-        class="category-card"
-        *ngFor="let c of categorias"
-        routerLink="/productos"
-        [queryParams]="{ categoria: c.clave }"
-        [class.active]="categoriaActiva === c.clave"
-      >
-        <span class="category-card__icon">{{ c.icono }}</span>
-        <span class="category-card__name">{{ c.nombre }}</span>
-      </a>
+      @for (c of categorias; track c.clave) {
+        <a
+          class="category-card"
+          routerLink="/productos"
+          [queryParams]="{ categoria: c.clave }"
+          [class.active]="categoriaActiva === c.clave"
+          >
+          <span class="category-card__icon">{{ c.icono }}</span>
+          <span class="category-card__name">{{ c.nombre }}</span>
+        </a>
+      }
     </div>
 
     <div class="products__toolbar">
@@ -29,44 +30,52 @@
         <input type="search" placeholder="Buscar productos..." aria-label="Buscar productos" [(ngModel)]="busqueda" />
       </div>
       <select class="sort-select" aria-label="Ordenar productos" [(ngModel)]="orden">
-        <option *ngFor="let o of ordenes" [ngValue]="o.valor">{{ o.texto }}</option>
+        @for (o of ordenes; track o.valor) {
+          <option [ngValue]="o.valor">{{ o.texto }}</option>
+        }
       </select>
     </div>
 
-    <div class="alert alert--error" *ngIf="error">{{ error }}</div>
+    @if (error) {
+      <div class="alert alert--error">{{ error }}</div>
+    }
 
     <!-- Esqueleto de carga usando la directiva estructural personalizada *appRepetir -->
-    <div class="products__grid" *ngIf="cargando" aria-hidden="true">
-      <div class="product-card skeleton" *appRepetir="8">
-        <div class="skeleton__image"></div>
-        <div class="product-card__body">
-          <div class="skeleton__line skeleton__line--short"></div>
-          <div class="skeleton__line"></div>
-          <div class="skeleton__line"></div>
+    @if (cargando) {
+      <div class="products__grid" aria-hidden="true">
+        <div class="product-card skeleton" *appRepetir="8">
+          <div class="skeleton__image"></div>
+          <div class="product-card__body">
+            <div class="skeleton__line skeleton__line--short"></div>
+            <div class="skeleton__line"></div>
+            <div class="skeleton__line"></div>
+          </div>
         </div>
       </div>
-    </div>
+    }
 
-    <ng-container *ngIf="!cargando && !error">
-      <ng-container *ngIf="productos | filtrarProductos: categoriaActiva : busqueda : orden as filtrados">
+    @if (!cargando && !error) {
+      @if (productos | filtrarProductos: categoriaActiva : busqueda : orden; as filtrados) {
         <p class="products__count">
           Mostrando <strong>{{ filtrados.length }}</strong> de {{ productos.length }} productos
         </p>
-        <div class="products__grid" *ngIf="filtrados.length; else sinResultados">
-          <app-producto-card
-            *ngFor="let p of filtrados; trackBy: porId"
-            [producto]="p"
-            [categoria]="nombreCategoria(p.categoria)"
-          />
-        </div>
-      </ng-container>
-    </ng-container>
+        @if (filtrados.length) {
+          <div class="products__grid">
+            @for (p of filtrados; track p.id) {
+              <app-producto-card
+                [producto]="p"
+                [categoria]="nombreCategoria(p.categoria)"
+                />
+            }
+          </div>
+        } @else {
+          <div class="products__empty">
+            <p>No se encontraron productos con esos criterios.</p>
+            <button class="btn btn--outline" type="button" (click)="limpiarFiltros()">Limpiar búsqueda</button>
+          </div>
+        }
+      }
+    }
 
-    <ng-template #sinResultados>
-      <div class="products__empty">
-        <p>No se encontraron productos con esos criterios.</p>
-        <button class="btn btn--outline" type="button" (click)="limpiarFiltros()">Limpiar búsqueda</button>
-      </div>
-    </ng-template>
   </div>
 </section>

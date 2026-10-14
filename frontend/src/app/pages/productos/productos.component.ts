@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,7 +11,7 @@ import { mensajeDeError } from '../../utils/api-error';
 
 @Component({
   selector: 'app-productos',
-  imports: [NgFor, NgIf, FormsModule, RouterLink, ProductoCardComponent, FiltrarProductosPipe, RepetirDirective],
+  imports: [FormsModule, RouterLink, ProductoCardComponent, FiltrarProductosPipe, RepetirDirective],
   templateUrl: './productos.component.html',
 })
 export class ProductosComponent implements OnInit {
@@ -55,10 +54,6 @@ export class ProductosComponent implements OnInit {
 
   nombreCategoria(clave: string): string {
     return this.categorias.find((c) => c.clave === clave)?.nombre ?? clave;
-  }
-
-  porId(_: number, producto: Producto): number {
-    return producto.id;
   }
 
   limpiarFiltros(): void {

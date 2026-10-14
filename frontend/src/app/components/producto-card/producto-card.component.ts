@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BadgeProductoDirective } from '../../directives/badge-producto.directive';
@@ -12,7 +11,7 @@ import { usarImagenRespaldo } from '../../utils/imagen';
 
 @Component({
   selector: 'app-producto-card',
-  imports: [NgIf, RouterLink, SolesPipe, TruncarPipe, BadgeProductoDirective, ResaltarDirective],
+  imports: [RouterLink, SolesPipe, TruncarPipe, BadgeProductoDirective, ResaltarDirective],
   templateUrl: './producto-card.component.html',
   host: { style: 'display: block; height: 100%' },
 })

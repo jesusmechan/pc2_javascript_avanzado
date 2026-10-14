@@ -1,4 +1,4 @@
-import { NgFor, NgIf, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,7 +18,7 @@ const TIEMPO_PROCESO_MS = 1200;
 
 @Component({
   selector: 'app-pago',
-  imports: [NgIf, NgFor, UpperCasePipe, FormsModule, RouterLink, SolesPipe],
+  imports: [UpperCasePipe, FormsModule, RouterLink, SolesPipe],
   templateUrl: './pago.component.html',
 })
 export class PagoComponent implements OnInit {

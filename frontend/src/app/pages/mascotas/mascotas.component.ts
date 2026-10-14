@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,7 +11,7 @@ const TAMANO_MAXIMO_FOTO = 1024 * 1024;
 
 @Component({
   selector: 'app-mascotas',
-  imports: [NgIf, NgFor, FormsModule, ReactiveFormsModule, RouterLink, SolesPipe],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, SolesPipe],
   templateUrl: './mascotas.component.html',
 })
 export class MascotasComponent implements OnInit {

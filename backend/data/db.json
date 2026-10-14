@@ -1,10 +1,35 @@
 {
   "categorias": [
-    { "id": 1, "clave": "perros", "nombre": "Perros", "icono": "🐕" },
-    { "id": 2, "clave": "gatos", "nombre": "Gatos", "icono": "🐈" },
-    { "id": 3, "clave": "aves", "nombre": "Aves", "icono": "🦜" },
-    { "id": 4, "clave": "peces", "nombre": "Peces", "icono": "🐠" },
-    { "id": 5, "clave": "accesorios", "nombre": "Accesorios", "icono": "🎀" }
+    {
+      "id": 1,
+      "clave": "perros",
+      "nombre": "Perros",
+      "icono": "🐕"
+    },
+    {
+      "id": 2,
+      "clave": "gatos",
+      "nombre": "Gatos",
+      "icono": "🐈"
+    },
+    {
+      "id": 3,
+      "clave": "aves",
+      "nombre": "Aves",
+      "icono": "🦜"
+    },
+    {
+      "id": 4,
+      "clave": "peces",
+      "nombre": "Peces",
+      "icono": "🐠"
+    },
+    {
+      "id": 5,
+      "clave": "accesorios",
+      "nombre": "Accesorios",
+      "icono": "🎀"
+    }
   ],
   "productos": [
     {
@@ -200,7 +225,28 @@
       "disponible": true
     }
   ],
-  "usuarios": [],
-  "mascotas": [],
+  "usuarios": [
+    {
+      "id": 1,
+      "nombre": "Jesús Manuel Mechan Gonzales",
+      "email": "jesusmanuelmechan@gmail.com",
+      "passwordHash": "7a11d88cfd52e9c66a85fc01613711b3:51ca59c7ed2c3c63b9f6a191c06cc5fcc595e4b55906cb1af5c102d7d881c48dace4e6d9c3e2f0d6377f9344503f23e56627a664de2298039f9c1258ce3c6051",
+      "rol": "cliente",
+      "creadoEn": "2026-10-14T06:55:07.254Z"
+    }
+  ],
+  "mascotas": [
+    {
+      "id": 1,
+      "usuarioId": 1,
+      "nombre": "Maia",
+      "tipo": "perro",
+      "edad": 4,
+      "peso": 21,
+      "tipoComida": "premium",
+      "icono": "🐶",
+      "foto": ""
+    }
+  ],
   "pedidos": []
 }

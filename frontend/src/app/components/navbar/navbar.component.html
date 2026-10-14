@@ -6,40 +6,42 @@
     </a>
 
     <ul class="nav__links" [class.open]="menuAbierto()">
-      <li *ngFor="let e of enlaces">
-        <a
-          [routerLink]="e.ruta"
-          [fragment]="e.fragmento"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="e.activo"
-          (click)="cerrarMenu()"
-          >{{ e.texto }}</a
-        >
-      </li>
-    </ul>
+      @for (e of enlaces; track e.texto) {
+        <li>
+          <a
+            [routerLink]="e.ruta"
+            [fragment]="e.fragmento"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="e.activo"
+            (click)="cerrarMenu()"
+            >{{ e.texto }}</a
+            >
+          </li>
+        }
+      </ul>
 
-    <div class="nav__actions">
-      <a class="btn-account" routerLink="/cuenta" routerLinkActive="active" (click)="cerrarMenu()">
-        <span aria-hidden="true">{{ auth.autenticado() ? '🐾' : '◯' }}</span>
-        <span>{{ auth.autenticado() ? 'Hola, ' + auth.primerNombre() : 'Iniciar sesión' }}</span>
-      </a>
-      <button class="btn-cart" type="button" (click)="carrito.abierto.set(true)" aria-label="Abrir carrito">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="9" cy="21" r="1" />
-          <circle cx="20" cy="21" r="1" />
-          <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
-        </svg>
-        <span class="btn-cart__badge" [class.bump]="badgeAnimado()">{{ carrito.cantidadTotal() }}</span>
-      </button>
-      <button
-        class="nav__toggle"
-        type="button"
-        (click)="menuAbierto.set(!menuAbierto())"
-        [attr.aria-expanded]="menuAbierto()"
-        aria-label="Menú"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-</header>
+      <div class="nav__actions">
+        <a class="btn-account" routerLink="/cuenta" routerLinkActive="active" (click)="cerrarMenu()">
+          <span aria-hidden="true">{{ auth.autenticado() ? '🐾' : '◯' }}</span>
+          <span>{{ auth.autenticado() ? 'Hola, ' + auth.primerNombre() : 'Iniciar sesión' }}</span>
+        </a>
+        <button class="btn-cart" type="button" (click)="carrito.abierto.set(true)" aria-label="Abrir carrito">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+          </svg>
+          <span class="btn-cart__badge" [class.bump]="badgeAnimado()">{{ carrito.cantidadTotal() }}</span>
+        </button>
+        <button
+          class="nav__toggle"
+          type="button"
+          (click)="menuAbierto.set(!menuAbierto())"
+          [attr.aria-expanded]="menuAbierto()"
+          aria-label="Menú"
+          >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>

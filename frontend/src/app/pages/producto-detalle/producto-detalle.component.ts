@@ -1,4 +1,4 @@
-import { NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
@@ -13,7 +13,7 @@ import { usarImagenRespaldo } from '../../utils/imagen';
 
 @Component({
   selector: 'app-producto-detalle',
-  imports: [NgIf, RouterLink, TitleCasePipe, SolesPipe, BadgeProductoDirective],
+  imports: [RouterLink, TitleCasePipe, SolesPipe, BadgeProductoDirective],
   templateUrl: './producto-detalle.component.html',
 })
 export class ProductoDetalleComponent implements OnInit {

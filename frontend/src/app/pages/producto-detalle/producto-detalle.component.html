@@ -2,55 +2,58 @@
   <div class="container">
     <nav class="breadcrumb" aria-label="Ruta de navegación">
       <a routerLink="/">Inicio</a><span>/</span><a routerLink="/productos">Productos</a>
-      <ng-container *ngIf="producto">
+      @if (producto) {
         <span>/</span>
         <a routerLink="/productos" [queryParams]="{ categoria: producto.categoria }">{{ categoria }}</a>
-      </ng-container>
+      }
     </nav>
 
-    <div class="alert alert--error" *ngIf="error">
-      {{ error }} <a routerLink="/productos">Volver al catálogo</a>
-    </div>
-
-    <article class="product-detail" *ngIf="producto">
-      <div class="product-detail__image">
-        <img [src]="producto.imagen" [alt]="producto.nombre" (error)="usarImagenRespaldo($event)" />
-        <span *ngIf="producto.badge" [appBadgeProducto]="producto.badge"></span>
+    @if (error) {
+      <div class="alert alert--error">
+        {{ error }} <a routerLink="/productos">Volver al catálogo</a>
       </div>
+    }
 
-      <div class="product-detail__info">
-        <span class="product-card__category">{{ categoria }} · {{ producto.tipo | titlecase }}</span>
-        <h1>{{ producto.nombre }}</h1>
-        <p class="product-detail__desc">{{ producto.descripcion }}</p>
-
-        <div class="product-detail__price">
-          <span class="product-card__price">{{ producto.precio | soles }}</span>
-          <ng-container *ngIf="producto.precioAnterior">
-            <span class="product-card__price-old">{{ producto.precioAnterior | soles }}</span>
-            <span class="product-detail__saving">Ahorras {{ ahorro | soles }}</span>
-          </ng-container>
+    @if (producto) {
+      <article class="product-detail">
+        <div class="product-detail__image">
+          <img [src]="producto.imagen" [alt]="producto.nombre" (error)="usarImagenRespaldo($event)" />
+          @if (producto.badge) {
+            <span [appBadgeProducto]="producto.badge"></span>
+          }
         </div>
-
-        <ng-container *ngIf="producto.disponible; else agotado">
-          <div class="product-detail__qty">
-            <span>Cantidad</span>
-            <button class="qty-btn" type="button" (click)="cambiarCantidad(-1)" [disabled]="cantidad <= 1" aria-label="Disminuir cantidad">−</button>
-            <span class="cart-item__qty">{{ cantidad }}</span>
-            <button class="qty-btn" type="button" (click)="cambiarCantidad(1)" [disabled]="cantidad >= maximo" aria-label="Aumentar cantidad">+</button>
+        <div class="product-detail__info">
+          <span class="product-card__category">{{ categoria }} · {{ producto.tipo | titlecase }}</span>
+          <h1>{{ producto.nombre }}</h1>
+          <p class="product-detail__desc">{{ producto.descripcion }}</p>
+          <div class="product-detail__price">
+            <span class="product-card__price">{{ producto.precio | soles }}</span>
+            @if (producto.precioAnterior) {
+              <span class="product-card__price-old">{{ producto.precioAnterior | soles }}</span>
+              <span class="product-detail__saving">Ahorras {{ ahorro | soles }}</span>
+            }
           </div>
-          <div class="product-detail__actions">
-            <button class="btn btn--primary btn--lg" type="button" (click)="agregar()">Agregar al carrito</button>
-            <button class="btn btn--outline btn--lg" type="button" (click)="comprarAhora()">Comprar ahora</button>
-          </div>
-        </ng-container>
-        <ng-template #agotado><p class="alert alert--error">Producto no disponible por el momento.</p></ng-template>
-
-        <ul class="about__list product-detail__perks">
-          <li>🚚 Entrega en 24-48 horas en Lima Metropolitana</li>
-          <li>↩️ 30 días para devoluciones</li>
-          <li>🔒 Pago seguro con tarjeta, Yape/Plin o contra entrega</li>
-        </ul>
-      </div>
-    </article>
+          @if (producto.disponible) {
+            <div class="product-detail__qty">
+              <span>Cantidad</span>
+              <button class="qty-btn" type="button" (click)="cambiarCantidad(-1)" [disabled]="cantidad <= 1" aria-label="Disminuir cantidad">−</button>
+              <span class="cart-item__qty">{{ cantidad }}</span>
+              <button class="qty-btn" type="button" (click)="cambiarCantidad(1)" [disabled]="cantidad >= maximo" aria-label="Aumentar cantidad">+</button>
+            </div>
+            <div class="product-detail__actions">
+              <button class="btn btn--primary btn--lg" type="button" (click)="agregar()">Agregar al carrito</button>
+              <button class="btn btn--outline btn--lg" type="button" (click)="comprarAhora()">Comprar ahora</button>
+            </div>
+          } @else {
+            <p class="alert alert--error">Producto no disponible por el momento.</p>
+          }
+          <ul class="about__list product-detail__perks">
+            <li>🚚 Entrega en 24-48 horas en Lima Metropolitana</li>
+            <li>↩️ 30 días para devoluciones</li>
+            <li>🔒 Pago seguro con tarjeta, Yape/Plin o contra entrega</li>
+          </ul>
+        </div>
+      </article>
+    }
   </div>
 </section>

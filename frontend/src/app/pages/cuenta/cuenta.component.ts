@@ -1,4 +1,4 @@
-import { DatePipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, effect, inject, Input, untracked } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -31,7 +31,7 @@ const registroVacio = () => ({ nombre: '', email: '', password: '', confirmar: '
 
 @Component({
   selector: 'app-cuenta',
-  imports: [NgIf, NgFor, DatePipe, FormsModule, RouterLink, SolesPipe, RepetirDirective],
+  imports: [DatePipe, FormsModule, RouterLink, SolesPipe, RepetirDirective],
   templateUrl: './cuenta.component.html',
 })
 export class CuentaComponent {
@@ -175,10 +175,6 @@ export class CuentaComponent {
   metodoPago(pedido: Pedido): string {
     const nombre = NOMBRES_METODO[pedido.pago.metodo] ?? pedido.pago.metodo;
     return pedido.pago.ultimos4 ? `${nombre} •••• ${pedido.pago.ultimos4}` : nombre;
-  }
-
-  porId(_indice: number, pedido: Pedido): number {
-    return pedido.id;
   }
 
   private enviar(peticion: ReturnType<AuthService['login']>, form: NgForm): void {

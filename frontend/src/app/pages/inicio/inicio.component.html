@@ -26,116 +26,126 @@
           alt="Perro feliz con su dueño"
           class="hero__image"
           (error)="usarImagenRespaldo($event)"
-        />
-        <div class="hero__float-card hero__float-card--1">
-          <span>🦴</span>
-          <div><strong>Huesos Premium</strong><small>Desde S/ 18.90</small></div>
-        </div>
-        <div class="hero__float-card hero__float-card--2">
-          <span>🐱</span>
-          <div><strong>+2,400 vendidos</strong><small>Alimento gato</small></div>
+          />
+          <div class="hero__float-card hero__float-card--1">
+            <span>🦴</span>
+            <div><strong>Huesos Premium</strong><small>Desde S/ 18.90</small></div>
+          </div>
+          <div class="hero__float-card hero__float-card--2">
+            <span>🐱</span>
+            <div><strong>+2,400 vendidos</strong><small>Alimento gato</small></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="categories" id="categorias">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Categorías</span>
-      <h2>Encuentra por tipo de mascota</h2>
-      <p>Selecciona una categoría para ver sus productos</p>
+  <section class="categories" id="categorias">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Categorías</span>
+        <h2>Encuentra por tipo de mascota</h2>
+        <p>Selecciona una categoría para ver sus productos</p>
+      </div>
+      @if (error) {
+        <div class="alert alert--error">
+          No se pudo conectar con la API. Ejecuta <code>npm run api</code> para iniciar el backend.
+        </div>
+      }
+      <div class="categories__grid">
+        <a class="category-card" routerLink="/productos">
+          <span class="category-card__icon">🐾</span>
+          <span class="category-card__name">Todos</span>
+        </a>
+        @for (c of categorias; track c.clave) {
+          <a class="category-card" routerLink="/productos" [queryParams]="{ categoria: c.clave }">
+            <span class="category-card__icon">{{ c.icono }}</span>
+            <span class="category-card__name">{{ c.nombre }}</span>
+          </a>
+        }
+      </div>
     </div>
-    <div class="alert alert--error" *ngIf="error">
-      No se pudo conectar con la API. Ejecuta <code>npm run api</code> para iniciar el backend.
-    </div>
-    <div class="categories__grid">
-      <a class="category-card" routerLink="/productos">
-        <span class="category-card__icon">🐾</span>
-        <span class="category-card__name">Todos</span>
-      </a>
-      <a class="category-card" *ngFor="let c of categorias" routerLink="/productos" [queryParams]="{ categoria: c.clave }">
-        <span class="category-card__icon">{{ c.icono }}</span>
-        <span class="category-card__name">{{ c.nombre }}</span>
-      </a>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section class="products" *ngIf="destacados.length">
-  <div class="container">
-    <div class="section-header">
-      <span class="section-tag">Catálogo</span>
-      <h2>Productos destacados</h2>
-      <p>Los mejores productos seleccionados para el bienestar de tu compañero</p>
-    </div>
-    <div class="products__grid">
-      <app-producto-card *ngFor="let p of destacados" [producto]="p" [categoria]="nombreCategoria(p.categoria)" />
-    </div>
-    <div class="products__more">
-      <a routerLink="/productos" class="btn btn--outline">Ver todo el catálogo →</a>
-    </div>
-  </div>
-</section>
+  @if (destacados.length) {
+    <section class="products">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Catálogo</span>
+          <h2>Productos destacados</h2>
+          <p>Los mejores productos seleccionados para el bienestar de tu compañero</p>
+        </div>
+        <div class="products__grid">
+          @for (p of destacados; track p.id) {
+            <app-producto-card [producto]="p" [categoria]="nombreCategoria(p.categoria)" />
+          }
+        </div>
+        <div class="products__more">
+          <a routerLink="/productos" class="btn btn--outline">Ver todo el catálogo →</a>
+        </div>
+      </div>
+    </section>
+  }
 
-<section class="benefits">
-  <div class="container benefits__grid">
-    <div class="benefit-card" *ngFor="let b of beneficios">
-      <div class="benefit-card__icon">{{ b.icono }}</div>
-      <h3>{{ b.titulo }}</h3>
-      <p>{{ b.texto }}</p>
+  <section class="benefits">
+    <div class="container benefits__grid">
+      @for (b of beneficios; track b.titulo) {
+        <div class="benefit-card">
+          <div class="benefit-card__icon">{{ b.icono }}</div>
+          <h3>{{ b.titulo }}</h3>
+          <p>{{ b.texto }}</p>
+        </div>
+      }
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="about" id="nosotros">
-  <div class="container about__grid">
-    <div class="about__image">
-      <img
-        src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=500&fit=crop"
-        alt="Mascotas felices"
-        (error)="usarImagenRespaldo($event)"
-      />
-      <div class="about__badge"><strong>8+</strong><span>Años de experiencia</span></div>
-    </div>
-    <div class="about__content">
-      <span class="section-tag">Sobre nosotros</span>
-      <h2>Amamos a las mascotas tanto como tú</h2>
-      <p>
-        En DancyPet creemos que cada mascota merece lo mejor. Desde 2018, ofrecemos productos de calidad premium
-        seleccionados por expertos en bienestar animal.
-      </p>
-      <ul class="about__list">
-        <li>✓ Productos 100% originales y certificados</li>
-        <li>✓ Marcas reconocidas internacionalmente</li>
-        <li>✓ Precios competitivos y ofertas exclusivas</li>
-        <li>✓ Suscripción mensual de alimento para tu mascota</li>
-      </ul>
-      <a routerLink="/cuenta/mascotas" class="btn btn--primary" appResaltar>Calcula su suscripción mensual</a>
-    </div>
-  </div>
-</section>
+  <section class="about" id="nosotros">
+    <div class="container about__grid">
+      <div class="about__image">
+        <img
+          src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=500&fit=crop"
+          alt="Mascotas felices"
+          (error)="usarImagenRespaldo($event)"
+          />
+          <div class="about__badge"><strong>8+</strong><span>Años de experiencia</span></div>
+        </div>
+        <div class="about__content">
+          <span class="section-tag">Sobre nosotros</span>
+          <h2>Amamos a las mascotas tanto como tú</h2>
+          <p>
+            En DancyPet creemos que cada mascota merece lo mejor. Desde 2018, ofrecemos productos de calidad premium
+            seleccionados por expertos en bienestar animal.
+          </p>
+          <ul class="about__list">
+            <li>✓ Productos 100% originales y certificados</li>
+            <li>✓ Marcas reconocidas internacionalmente</li>
+            <li>✓ Precios competitivos y ofertas exclusivas</li>
+            <li>✓ Suscripción mensual de alimento para tu mascota</li>
+          </ul>
+          <a routerLink="/cuenta/mascotas" class="btn btn--primary" appResaltar>Calcula su suscripción mensual</a>
+        </div>
+      </div>
+    </section>
 
-<section class="newsletter">
-  <div class="container newsletter__inner">
-    <div class="newsletter__text">
-      <h2>🎁 Obtén 15% de descuento</h2>
-      <p>Suscríbete y recibe ofertas exclusivas para tu mascota</p>
-    </div>
-    <form class="newsletter__form" #form="ngForm" (ngSubmit)="suscribirNewsletter(form)" novalidate>
-      <input
-        type="email"
-        name="email"
-        placeholder="tu@email.com"
-        aria-label="Correo electrónico"
-        [(ngModel)]="correoNewsletter"
-        #email="ngModel"
-        required
-        email
-        [class.is-invalid]="email.invalid && email.touched"
-      />
-      <button type="submit" class="btn btn--primary">Suscribirme</button>
-    </form>
-  </div>
-</section>
+    <section class="newsletter">
+      <div class="container newsletter__inner">
+        <div class="newsletter__text">
+          <h2>🎁 Obtén 15% de descuento</h2>
+          <p>Suscríbete y recibe ofertas exclusivas para tu mascota</p>
+        </div>
+        <form class="newsletter__form" #form="ngForm" (ngSubmit)="suscribirNewsletter(form)" novalidate>
+          <input
+            type="email"
+            name="email"
+            placeholder="tu@email.com"
+            aria-label="Correo electrónico"
+            [(ngModel)]="correoNewsletter"
+            #email="ngModel"
+            required
+            email
+            [class.is-invalid]="email.invalid && email.touched"
+            />
+            <button type="submit" class="btn btn--primary">Suscribirme</button>
+          </form>
+        </div>
+      </section>

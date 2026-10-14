@@ -10,32 +10,44 @@
       </div>
     </div>
 
-    <div class="alert alert--error" *ngIf="error">{{ error }}</div>
+    @if (error) {
+      <div class="alert alert--error">{{ error }}</div>
+    }
 
     <div class="pets-layout">
       <div>
         <div class="pets-list">
-          <div class="pets-empty" *ngIf="!cargando && !mascotas.length">Aún no has registrado mascotas.</div>
-          <article class="pet-card" *ngFor="let m of mascotas">
-            <div class="pet-card__avatar">
-              <img *ngIf="m.foto; else icono" [src]="m.foto" [alt]="m.nombre" />
-              <ng-template #icono>{{ m.icono }}</ng-template>
-            </div>
-            <div>
-              <div class="pet-card__name">{{ m.nombre }}</div>
-              <div class="pet-card__meta">
-                {{ m.tipo }} · {{ m.edad }} {{ m.edad === 1 ? 'año' : 'años' }} · {{ m.peso }} kg · Comida {{ nombreComida(m.tipoComida) }}
+          @if (!cargando && !mascotas.length) {
+            <div class="pets-empty">Aún no has registrado mascotas.</div>
+          }
+          @for (m of mascotas; track m.id) {
+            <article class="pet-card">
+              <div class="pet-card__avatar">
+                @if (m.foto) {
+                  <img [src]="m.foto" [alt]="m.nombre" />
+                } @else {
+                  {{ m.icono }}
+                }
               </div>
-              <div class="pet-card__subscription">
-                <ng-container *ngIf="m.suscripcionActiva; else monto">✅ Suscripción activa: {{ m.suscripcion.precioMensualFinal | soles }} / mes</ng-container>
-                <ng-template #monto>Suscripción: {{ m.suscripcion.precioMensualFinal | soles }} / mes · {{ m.suscripcion.gramosDiarios }} g diarios</ng-template>
+              <div>
+                <div class="pet-card__name">{{ m.nombre }}</div>
+                <div class="pet-card__meta">
+                  {{ m.tipo }} · {{ m.edad }} {{ m.edad === 1 ? 'año' : 'años' }} · {{ m.peso }} kg · Comida {{ nombreComida(m.tipoComida) }}
+                </div>
+                <div class="pet-card__subscription">
+                  @if (m.suscripcionActiva) {
+                    ✅ Suscripción activa: {{ m.suscripcion.precioMensualFinal | soles }} / mes
+                  } @else {
+                    Suscripción: {{ m.suscripcion.precioMensualFinal | soles }} / mes · {{ m.suscripcion.gramosDiarios }} g diarios
+                  }
+                </div>
               </div>
-            </div>
-            <div class="pet-card__actions">
-              <button type="button" (click)="editar(m)">Editar</button>
-              <button type="button" (click)="eliminar(m)" [disabled]="m.suscripcionActiva" [title]="m.suscripcionActiva ? 'Tiene una suscripción activa' : ''">Eliminar</button>
-            </div>
-          </article>
+              <div class="pet-card__actions">
+                <button type="button" (click)="editar(m)">Editar</button>
+                <button type="button" (click)="eliminar(m)" [disabled]="m.suscripcionActiva" [title]="m.suscripcionActiva ? 'Tiene una suscripción activa' : ''">Eliminar</button>
+              </div>
+            </article>
+          }
         </div>
 
         <section class="subscription-cta">
@@ -46,8 +58,12 @@
             <div class="subscription-field">
               <label for="subscriptionPetSelect">Mascota para suscribir</label>
               <select id="subscriptionPetSelect" name="mascota" [ngModel]="suscripcion.mascotaId" (ngModelChange)="elegirParaSuscripcion($event)" [disabled]="!disponiblesParaSuscribir.length">
-                <option *ngIf="!disponiblesParaSuscribir.length" [ngValue]="0">{{ mascotas.length ? 'Todas tus mascotas ya están suscritas' : 'Registra una mascota primero' }}</option>
-                <option *ngFor="let m of disponiblesParaSuscribir" [ngValue]="m.id">{{ m.nombre }} ({{ m.tipo }})</option>
+                @if (!disponiblesParaSuscribir.length) {
+                  <option [ngValue]="0">{{ mascotas.length ? 'Todas tus mascotas ya están suscritas' : 'Registra una mascota primero' }}</option>
+                }
+                @for (m of disponiblesParaSuscribir; track m.id) {
+                  <option [ngValue]="m.id">{{ m.nombre }} ({{ m.tipo }})</option>
+                }
               </select>
             </div>
             <div class="subscription-field">
@@ -58,12 +74,16 @@
               <label for="subscriptionTime">Rango de horario</label>
               <select id="subscriptionTime" name="horario" [(ngModel)]="suscripcion.horario">
                 <option value="">Selecciona un horario</option>
-                <option *ngFor="let h of horarios" [value]="h">{{ h }}</option>
+                @for (h of horarios; track h) {
+                  <option [value]="h">{{ h }}</option>
+                }
               </select>
             </div>
             <button class="btn btn--primary btn--lg" type="submit" [disabled]="!disponiblesParaSuscribir.length">Empezar con la suscripción</button>
           </form>
-          <p class="auth-error" *ngIf="errorSuscripcion" role="alert">{{ errorSuscripcion }}</p>
+          @if (errorSuscripcion) {
+            <p class="auth-error" role="alert">{{ errorSuscripcion }}</p>
+          }
         </section>
       </div>
 
@@ -74,7 +94,9 @@
           <div class="form-group">
             <label for="petName">Nombre</label>
             <input id="petName" formControlName="nombre" [class.is-invalid]="invalido('nombre')" />
-            <small class="field-error" *ngIf="invalido('nombre')">Entre 2 y 30 caracteres.</small>
+            @if (invalido('nombre')) {
+              <small class="field-error">Entre 2 y 30 caracteres.</small>
+            }
           </div>
           <div class="form-group">
             <label for="petType">Tipo</label>
@@ -86,38 +108,52 @@
           <div class="form-group">
             <label for="petAge">Edad (años)</label>
             <input id="petAge" type="number" min="0" max="30" step="0.1" formControlName="edad" [class.is-invalid]="invalido('edad')" />
-            <small class="field-error" *ngIf="invalido('edad')">Entre 0 y 30 años.</small>
+            @if (invalido('edad')) {
+              <small class="field-error">Entre 0 y 30 años.</small>
+            }
           </div>
           <div class="form-group">
             <label for="petWeight">Peso (kg)</label>
             <input id="petWeight" type="number" min="0.1" max="100" step="0.1" formControlName="peso" [class.is-invalid]="invalido('peso')" />
-            <small class="field-error" *ngIf="invalido('peso')">Entre 0.1 y 100 kg.</small>
+            @if (invalido('peso')) {
+              <small class="field-error">Entre 0.1 y 100 kg.</small>
+            }
           </div>
           <div class="form-group">
             <label for="petFood">Tipo de comida</label>
             <select id="petFood" formControlName="tipoComida">
-              <option *ngFor="let c of comidas" [value]="c.valor">{{ c.texto }}</option>
+              @for (c of comidas; track c.valor) {
+                <option [value]="c.valor">{{ c.texto }}</option>
+              }
             </select>
           </div>
           <div class="form-group">
             <label for="petIcon">Icono</label>
             <select id="petIcon" formControlName="icono">
-              <option *ngFor="let i of iconos" [value]="i">{{ i }}</option>
+              @for (i of iconos; track i) {
+                <option [value]="i">{{ i }}</option>
+              }
             </select>
           </div>
         </div>
         <div class="form-group">
           <label for="petPhoto">Foto (opcional, máx. 1 MB)</label>
           <input id="petPhoto" type="file" accept="image/png,image/jpeg,image/webp" (change)="alElegirFoto($event)" />
-          <div class="pet-form__preview" *ngIf="form.controls.foto.value">
-            <img [src]="form.controls.foto.value" alt="Vista previa" />
-            <button class="auth-link" type="button" (click)="form.controls.foto.setValue('')">Quitar foto</button>
-          </div>
+          @if (form.controls.foto.value) {
+            <div class="pet-form__preview">
+              <img [src]="form.controls.foto.value" alt="Vista previa" />
+              <button class="auth-link" type="button" (click)="form.controls.foto.setValue('')">Quitar foto</button>
+            </div>
+          }
         </div>
-        <p class="auth-error" *ngIf="errorForm" role="alert">{{ errorForm }}</p>
+        @if (errorForm) {
+          <p class="auth-error" role="alert">{{ errorForm }}</p>
+        }
         <div class="pet-form__actions">
           <button class="btn btn--primary btn--full" type="submit" [disabled]="guardando">{{ editandoId ? 'Guardar cambios' : 'Registrar mascota' }}</button>
-          <button class="btn btn--ghost btn--full" type="button" *ngIf="editandoId" (click)="cancelarEdicion()">Cancelar edición</button>
+          @if (editandoId) {
+            <button class="btn btn--ghost btn--full" type="button" (click)="cancelarEdicion()">Cancelar edición</button>
+          }
         </div>
       </form>
     </div>

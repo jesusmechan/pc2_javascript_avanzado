@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -12,7 +11,7 @@ import { usarImagenRespaldo } from '../../utils/imagen';
 
 @Component({
   selector: 'app-inicio',
-  imports: [NgFor, NgIf, FormsModule, RouterLink, ProductoCardComponent, ResaltarDirective],
+  imports: [FormsModule, RouterLink, ProductoCardComponent, ResaltarDirective],
   templateUrl: './inicio.component.html',
 })
 export class InicioComponent implements OnInit {
